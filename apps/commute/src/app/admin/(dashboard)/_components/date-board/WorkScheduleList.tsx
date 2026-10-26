@@ -1,7 +1,7 @@
 import { StateChip } from '@konkuk-icteam-fe/design-system/ui';
-import type { WorkScheduleSlot } from '../../_apis/workSchedules';
-import { PERIODS } from '../../_constants/period';
-import { getWorkerChipTone } from '../../_lib/getWorkerChipTone';
+import type { WorkScheduleSlot } from '../../../_apis/workSchedules';
+import { PERIODS } from '../../../_constants/period';
+import { getWorkerChipTone } from '../../../_lib/getWorkerChipTone';
 
 type WorkScheduleListProps = {
   slots: WorkScheduleSlot[];

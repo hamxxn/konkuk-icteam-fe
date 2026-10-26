@@ -1,7 +1,7 @@
 import type { TodoPeriod } from '../../_apis/todos';
 import type { WorkScheduleSlot } from '../../_apis/workSchedules';
 import { PERIODS } from '../../_constants/period';
-import type { OnDutyWorker } from '../_components/AssignTaskList';
+import type { OnDutyWorker } from '../_components/date-board/AssignTaskList';
 
 /**
  * 근무 칸에서 시간대별로 근무하는 근로학생을 한 번씩만 모읍니다. 시간대는 PERIODS 기준(12시 전 시작이면 오전)입니다.

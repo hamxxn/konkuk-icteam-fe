@@ -1,7 +1,7 @@
 import { IconPencil, IconTrash } from '@konkuk-icteam-fe/design-system/assets';
 import { cn } from '@konkuk-icteam-fe/design-system/cn';
 import { IconButton, StateChip } from '@konkuk-icteam-fe/design-system/ui';
-import type { Notice } from '../../_apis/notices';
+import type { Notice } from '../../../_apis/notices';
 import { formatDateRange } from '@/shared/utils/formatDate';
 
 type NoticeListProps = {

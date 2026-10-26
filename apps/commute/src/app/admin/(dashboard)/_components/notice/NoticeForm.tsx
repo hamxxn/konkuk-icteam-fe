@@ -5,11 +5,10 @@ import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { IconAdd } from '@konkuk-icteam-fe/design-system/assets';
 import { parseISO, toISO } from '@konkuk-icteam-fe/design-system/date';
-import { Button, Input, Textarea } from '@konkuk-icteam-fe/design-system/ui';
-import type { Notice, NoticeInput } from '../../_apis/notices';
-import DateRangeField from '../../_components/DateRangeField';
-import FieldError from '../../_components/FieldError';
-import { createNoticeSchema, type NoticeFormValues } from '../_lib/noticeSchema';
+import { Button, Input, Message, Textarea } from '@konkuk-icteam-fe/design-system/ui';
+import type { Notice, NoticeInput } from '../../../_apis/notices';
+import DateRangeField from '../../../_components/DateRangeField';
+import { createNoticeSchema, type NoticeFormValues } from '../../_lib/noticeSchema';
 
 // 새 공지는 오늘부터 일주일 동안 보이게 둔다
 const DEFAULT_POSTING_DAYS = 7;
@@ -93,7 +92,7 @@ export default function NoticeForm({ notice, onSubmit, onCancel }: NoticeFormPro
           aria-describedby={`${errorIdPrefix}-title`}
           {...register('title')}
         />
-        <FieldError id={`${errorIdPrefix}-title`} message={titleError} />
+        <Message id={`${errorIdPrefix}-title`} message={titleError} variant='error' />
       </label>
 
       <div className='flex flex-col gap-[0.8rem]'>
@@ -105,7 +104,7 @@ export default function NoticeForm({ notice, onSubmit, onCancel }: NoticeFormPro
           disablePastDates
           onChange={handlePeriodChange}
         />
-        <FieldError id={`${errorIdPrefix}-period`} message={periodError} />
+        <Message id={`${errorIdPrefix}-period`} message={periodError} variant='error' />
       </div>
 
       <label className='flex flex-col gap-[0.8rem]'>
@@ -119,7 +118,7 @@ export default function NoticeForm({ notice, onSubmit, onCancel }: NoticeFormPro
           aria-describedby={`${errorIdPrefix}-content`}
           {...register('content')}
         />
-        <FieldError id={`${errorIdPrefix}-content`} message={contentError} />
+        <Message id={`${errorIdPrefix}-content`} message={contentError} variant='error' />
       </label>
 
       <div className='flex flex-col gap-[0.6rem]'>

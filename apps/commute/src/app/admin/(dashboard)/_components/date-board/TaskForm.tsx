@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Button, Input } from '@konkuk-icteam-fe/design-system/ui';
-import type { TodoPeriod } from '../../_apis/todos';
+import type { TodoPeriod } from '../../../_apis/todos';
 import PeriodSelect from './PeriodSelect';
 
 type TaskFormProps = {

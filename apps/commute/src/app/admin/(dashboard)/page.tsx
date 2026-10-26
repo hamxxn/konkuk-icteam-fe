@@ -1,4 +1,4 @@
-import RequestNoticeBar from './_components/RequestNoticeBar';
+import RequestNoticeBar from './_components/request-notice/RequestNoticeBar';
 import PageClient from './page.client';
 
 export default function Page() {

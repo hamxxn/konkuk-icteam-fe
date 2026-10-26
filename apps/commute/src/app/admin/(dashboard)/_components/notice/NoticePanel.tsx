@@ -9,8 +9,8 @@ import {
   updateNotice,
   type Notice,
   type NoticeInput,
-} from '../../_apis/notices';
-import AdminPanel from '../../_layouts/AdminPanel';
+} from '../../../_apis/notices';
+import AdminPanel from '../../../_layouts/AdminPanel';
 import NoticeForm from './NoticeForm';
 import NoticeList from './NoticeList';
 

@@ -1,10 +1,10 @@
 'use client';
 
 import { useReducer, useState } from 'react';
-import { IconAdd, IconClose, IconPencil, IconTrash } from '@konkuk-icteam-fe/design-system/assets';
+import { IconAdd, IconPencil, IconTrash } from '@konkuk-icteam-fe/design-system/assets';
 import { cn } from '@konkuk-icteam-fe/design-system/cn';
 import { parseISO } from '@konkuk-icteam-fe/design-system/date';
-import { ConfirmModal, IconButton, StateChip } from '@konkuk-icteam-fe/design-system/ui';
+import { ConfirmModal, IconButton, TagChip } from '@konkuk-icteam-fe/design-system/ui';
 import {
   createTodo,
   deleteTodo,
@@ -14,9 +14,9 @@ import {
   updateTodo,
   type Todo,
   type TodoPeriod,
-} from '../../_apis/todos';
-import { getWorkerChipTone } from '../../_lib/getWorkerChipTone';
-import { PERIODS } from '../../_constants/period';
+} from '../../../_apis/todos';
+import { getWorkerChipTone } from '../../../_lib/getWorkerChipTone';
+import { PERIODS } from '../../../_constants/period';
 import TaskForm from './TaskForm';
 
 export type OnDutyWorker = { userId: number; userName: string };
@@ -172,19 +172,12 @@ export default function AssignTaskList({
                             <span className='caption-12-md text-gray-400'>미지정</span>
                           ) : (
                             assignees.map((userId) => (
-                              <span key={userId} className='inline-flex items-center'>
-                                <StateChip
-                                  label={getWorkerName(userId)}
-                                  tone={getWorkerChipTone(userId)}
-                                />
-                                <IconButton
-                                  aria-label={`${title}에서 ${getWorkerName(userId)} 빼기`}
-                                  className='ml-[0.2rem] text-gray-400 hover:text-black'
-                                  onClick={() => handleWorkerToggle(id, userId)}
-                                >
-                                  <IconClose aria-hidden className='h-[1.4rem] w-[1.4rem]' />
-                                </IconButton>
-                              </span>
+                              <TagChip
+                                key={userId}
+                                label={getWorkerName(userId)}
+                                tone={getWorkerChipTone(userId)}
+                                onRemove={() => handleWorkerToggle(id, userId)}
+                              />
                             ))
                           )}
                         </div>

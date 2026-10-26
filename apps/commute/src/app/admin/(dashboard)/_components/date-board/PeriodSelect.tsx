@@ -1,6 +1,6 @@
 import { cn } from '@konkuk-icteam-fe/design-system/cn';
-import type { TodoPeriod } from '../../_apis/todos';
-import { PERIODS } from '../../_constants/period';
+import type { TodoPeriod } from '../../../_apis/todos';
+import { PERIODS } from '../../../_constants/period';
 
 type PeriodSelectProps = {
   value: TodoPeriod;

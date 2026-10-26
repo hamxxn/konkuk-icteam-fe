@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { IconArrowRight, IconInfo } from '@konkuk-icteam-fe/design-system/assets';
 import { cn } from '@konkuk-icteam-fe/design-system/cn';
 import { ROUTES } from '@/shared/config/routes';
-import { usePendingRequestCount } from '../apis/dashboard.api';
+import { usePendingRequestCount } from '../../apis/dashboard.api';
 
 // 대시보드 맨 위 알림 줄. 승인 대기 요청 수는 직접 불러온다. 누르면 근로시간 수정요청 화면으로 간다. 처리할 요청이 있으면 파랗게 눈에 띄게 한다
 export default function RequestNoticeBar() {

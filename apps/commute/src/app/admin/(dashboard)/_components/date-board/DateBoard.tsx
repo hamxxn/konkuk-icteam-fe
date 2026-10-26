@@ -7,8 +7,8 @@ import { toISO } from '@konkuk-icteam-fe/design-system/date';
 import { DatePicker } from '@konkuk-icteam-fe/design-system/ui';
 import WorkScheduleList from './WorkScheduleList';
 import { formatMonthDayWithWeekday } from '@/shared/utils/formatDate';
-import { useWorkSchedule } from '../apis/dashboard.api';
-import { getWorkersByPeriod } from '../_lib/getWorkersByPeriod';
+import { useWorkSchedule } from '../../apis/dashboard.api';
+import { getWorkersByPeriod } from '../../_lib/getWorkersByPeriod';
 import AssignTaskList from './AssignTaskList';
 
 // 그날 하루를 보는 카드. 근무 시간표는 직접 불러온다. 맨 위 날짜를 바꾸면 아래 근무 시간표와 업무 지정이 함께 바뀐다.
