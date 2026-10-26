@@ -3,6 +3,7 @@ import { cn } from '@konkuk-icteam-fe/design-system/cn';
 import { Button, StateChip } from '@konkuk-icteam-fe/design-system/ui';
 import { useState } from 'react';
 import { WORK_STATUS_LABEL, WORK_STATUS_TONE } from '../_constants';
+import { LATE_LIMIT_MINUTES } from '@/shared/config/workHours';
 import { useDailyTasks } from '../_hooks';
 import { getTaskPeriod } from '../_lib';
 import { WorkStatus, type WorkSchedule } from '../_types';
@@ -53,6 +54,9 @@ export default function WorkScheduleCard({ schedules, date, onClockIn }: WorkSch
           ))}
         </ul>
       )}
+      <p className='caption-11-md mt-[1.6rem] border-t border-gray-50 pt-[1.2rem] text-gray-400'>
+        {`누적 지각이 ${LATE_LIMIT_MINUTES}분을 넘으면 장학금에 불이익이 있을 수 있어요. 출근하면 꼭 체크해 주세요.`}
+      </p>
     </div>
   );
 }

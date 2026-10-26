@@ -1,6 +1,6 @@
 import { toISO } from '@konkuk-icteam-fe/design-system/date';
-import { MY_USER_ID, WORKERS_MOCK } from '@/shared/api/mocks/workers';
 import { TaskPeriod, type TaskItem } from '../_types';
+import { MY_USER_ID, WORKERS_MOCK } from './workers';
 
 // 오전·오후 업무 목록. 날짜와 관계없이 같다
 const TASK_TITLES: Record<TaskPeriod, { id: number; title: string }[]> = {

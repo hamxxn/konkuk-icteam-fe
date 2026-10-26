@@ -1,4 +1,4 @@
-import { IconInfo } from '@/shared/assets/icons';
+import { IconInfo } from '@konkuk-icteam-fe/design-system/assets';
 import { MIN_WORK_HOURS_PER_SHIFT, WORK_HOUR_LIMITS } from '@/shared/config/workHours';
 
 type WorkRuleNoticeProps = {

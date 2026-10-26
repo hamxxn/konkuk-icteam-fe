@@ -25,7 +25,7 @@ export default function ScheduleSection() {
           selectedDate={selectedDate}
           disabledDates={nonWorkDates}
           disablePastDates={false}
-          color='green'
+          color='black'
           handleMonthChangeAction={handleMonthChange}
           handleDateChangeAction={handleSelectDate}
         />

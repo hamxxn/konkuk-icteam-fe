@@ -1,9 +1,10 @@
-import { Header, ScheduleSection, WorkSummarySection } from './_components';
+import { ApplyOpenBanner, Header, ScheduleSection, WorkSummarySection } from './_components';
 
 export default function Page() {
   return (
-    <main className='bg-black-1 flex min-h-screen w-full max-w-[60rem] min-w-0 flex-col gap-[3rem] px-[2.4rem] pt-[5.8rem] pb-[4rem] text-black'>
+    <main className='bg-black-1 flex min-h-screen w-full flex-col gap-[3rem] px-[2.4rem] pt-[5.8rem] pb-[9.6rem] text-black'>
       <Header />
+      <ApplyOpenBanner />
       <ScheduleSection />
       <WorkSummarySection />
     </main>

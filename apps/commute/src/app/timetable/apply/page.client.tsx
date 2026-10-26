@@ -24,6 +24,7 @@ import WeekNavigator from '../_components/WeekNavigator';
 import WorkRuleNotice from '../_components/WorkRuleNotice';
 import { useApplyPeriod } from '@/shared/hooks/useApplyPeriod';
 import { useLeaveGuard } from '../_hooks/useLeaveGuard';
+import { ROUTES } from '@/shared/config/routes';
 
 // 근로시간 신청 화면. 다음 달 근무 칸을 골라 한 번에 신청하고, 마감일까지는 다시 들어와 바꿀 수 있다.
 export default function PageClient() {
@@ -43,7 +44,7 @@ export default function PageClient() {
 
   // 신청 기간이 아니면(열리기 전·마감 후) 시간표로 돌려보낸다
   useEffect(() => {
-    if (!applyPeriod.isApplyOpen) router.replace('/timetable');
+    if (!applyPeriod.isApplyOpen) router.replace(ROUTES.TIMETABLE);
   }, [applyPeriod.isApplyOpen, router]);
 
   // 1회 최소 근무 시간을 못 채운 날이 있으면 신청하지 않고 알려 준다
@@ -63,7 +64,7 @@ export default function PageClient() {
   const handleApplyDoneModalOpenChange = (open: boolean) => {
     setIsApplyDoneModalOpen(open);
 
-    if (!open) router.replace('/');
+    if (!open) router.replace(ROUTES.HOME);
   };
 
   return (

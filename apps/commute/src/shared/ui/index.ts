@@ -1,6 +1,5 @@
 export { default as ArrowButton } from './arrow-button/ArrowButton';
 export { default as TextField } from './text-field/TextField';
-export { default as Toggle } from './toggle/Toggle';
 export type { ChipTone } from './types/chipTone';
 export { default as AuthShell } from './auth-shell/AuthShell';
 export { default as AuthTitle } from './auth-title/AuthTitle';

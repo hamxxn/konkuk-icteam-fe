@@ -22,6 +22,7 @@ import SlotLegend from '../_components/SlotLegend';
 import { EDIT_LEGEND_ITEMS } from '../_constants/slotLegend';
 import { useLeaveGuard } from '../_hooks/useLeaveGuard';
 import { SCHEDULE_CHANGE_RULES } from '@/shared/config/workHours';
+import { ROUTES } from '@/shared/config/routes';
 
 // 근로시간 수정 요청 화면. 칸을 눌러 추가·삭제 예정을 표시하고 한 번에 요청한다.
 export default function PageClient() {
@@ -49,7 +50,7 @@ export default function PageClient() {
   const handleRequestDoneModalOpenChange = (open: boolean) => {
     setIsRequestDoneModalOpen(open);
 
-    if (!open) router.replace('/');
+    if (!open) router.replace(ROUTES.HOME);
   };
 
   return (

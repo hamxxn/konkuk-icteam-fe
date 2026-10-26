@@ -6,10 +6,10 @@ import { useState } from 'react';
 import TimeTable from '@/shared/components/timetable/base/Week';
 import { useTimeTable } from '@/shared/components/timetable/hooks/useTimeTable';
 import { useTimeTableWeek } from '@/shared/components/timetable/hooks/useTimeTableWeek';
-import { Toggle } from '@/shared/ui';
 import WeekNavigator from './_components/WeekNavigator';
 import WorkRuleNotice from './_components/WorkRuleNotice';
-import { BottomCTAButton } from '@konkuk-icteam-fe/design-system/ui';
+import { BottomCTAButton, Toggle } from '@konkuk-icteam-fe/design-system/ui';
+import { ROUTES } from '@/shared/config/routes';
 
 // 근로 시간표 화면. 이번 달 안에서 주차를 오가며 내 근무 시간을 본다.
 export default function PageClient() {
@@ -21,7 +21,7 @@ export default function PageClient() {
   const router = useRouter();
 
   const handleEditClick = () => {
-    router.push('/timetable/edit');
+    router.push(ROUTES.TIMETABLE_EDIT);
   };
 
   return (
@@ -41,8 +41,7 @@ export default function PageClient() {
           onNextWeek={tableWeek.handleNextWeek}
         />
         <Toggle
-          className='gap-0 justify-self-end'
-          label=''
+          className='justify-self-end'
           aria-label='자세히'
           checked={isDetailVisible}
           onCheckedChange={setIsDetailVisible}

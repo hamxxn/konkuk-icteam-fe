@@ -1,4 +1,4 @@
-import { IconArrowBack } from '@konkuk-icteam-fe/design-system/assets';
+import { IconArrowLeft } from '@konkuk-icteam-fe/design-system/assets';
 import { IconButton } from '@konkuk-icteam-fe/design-system/ui';
 
 type BackHeaderProps = {
@@ -13,7 +13,7 @@ export default function BackHeader({ title, year, month, onBack }: BackHeaderPro
   return (
     <header className='flex items-start gap-[0.8rem]'>
       <IconButton aria-label='이전 페이지' onClick={onBack}>
-        <IconArrowBack aria-hidden className='h-[2.4rem] w-[2.4rem] text-black' />
+        <IconArrowLeft aria-hidden className='h-[2.4rem] w-[2.4rem] text-black' />
       </IconButton>
       <div>
         <h2 className='font-16-md text-blue'>{`${year}년 ${month}월`}</h2>

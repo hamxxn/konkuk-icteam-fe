@@ -1,9 +1,8 @@
 import { toISO } from '@konkuk-icteam-fe/design-system/date';
-import { MY_USER_ID } from '@/shared/api/mocks/workers';
-import { getScheduledWorkersMock } from '@/shared/api/mocks/workSchedules';
 import { SLOT_TIMES } from '@/shared/config/slot';
 import { checkWeekday, getMonthDates } from '@/shared/lib/calendar';
 import { WorkStatus, type HomeTodaySchedule } from '../_types';
+import { getScheduledWorkersMock, MY_USER_ID } from './workers';
 
 const formatTime = (minutes: number) =>
   `${String(Math.floor(minutes / 60)).padStart(2, '0')}:${String(minutes % 60).padStart(2, '0')}`;

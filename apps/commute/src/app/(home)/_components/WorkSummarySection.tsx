@@ -1,4 +1,4 @@
-import { WORK_HOUR_LIMITS } from '../_constants';
+import { WORK_HOUR_LIMITS } from '@/shared/config/workHours';
 import { USER_INFO_MOCK } from '../mock';
 
 // 이번주·이번달 근무 시간
@@ -45,7 +45,7 @@ const WorkSummaryCard = ({ title, currentHours, totalHours }: WorkSummaryCardPro
         aria-valuenow={currentHours}
       >
         <div
-          className='absolute inset-y-0 left-0 rounded-full bg-black'
+          className='bg-blue absolute inset-y-0 left-0 rounded-full'
           style={{ width: `${progress}%` }}
         />
       </div>
