@@ -3,14 +3,17 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@konkuk-icteam-fe/design-system/cn';
-import { ADMIN_NAVIGATION_ITEMS } from '../_constants/navigation';
-import { checkActiveNavigation } from '../_lib/checkActiveNavigation';
+import { ROUTES } from '@/shared/config/routes';
+import { ADMIN_NAVIGATION_ITEMS } from '../_routes/routes';
 
 // 관리자 메뉴.
 export default function AdminNav() {
   const pathname = usePathname();
+  // 대시보드(/admin)는 모든 메뉴의 상위 주소라 정확히 같을 때만 켜고, 나머지는 하위 주소에서도 켠다
   const activeIndex = ADMIN_NAVIGATION_ITEMS.findIndex(({ href }) =>
-    checkActiveNavigation(pathname, href),
+    href === ROUTES.ADMIN_HOME
+      ? pathname === href
+      : pathname === href || pathname.startsWith(`${href}/`),
   );
 
   return (

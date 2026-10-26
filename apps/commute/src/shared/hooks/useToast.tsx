@@ -42,10 +42,10 @@ export const useToast = (duration = 2000) => {
     <div
       role='status'
       aria-live='polite'
-      className='pointer-events-none fixed inset-x-0 bottom-[10rem] z-60 flex justify-center px-[2rem]'
+      className='pointer-events-none fixed inset-x-0 top-[10rem] z-60 flex justify-center px-[2rem]'
     >
       {state ? (
-        <div className='bg-black-1 rounded-[0.8rem] px-[1.6rem] py-[0.8rem] shadow-[0_0_12px_0_rgba(69,66,90,0.14)]'>
+        <div className='bg-black-1 shadow-[0_0_12px_0_rgba(57, 54, 74, 0.14)] rounded-[0.8rem] px-[1.6rem] py-[0.8rem]'>
           <Message id={messageId} message={state.message} variant={state.variant} showIcon />
         </div>
       ) : null}

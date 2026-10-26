@@ -1,8 +1,6 @@
 // 앱 화면 주소. 링크·이동·메뉴는 주소를 직접 쓰지 않고 여기서 가져온다
 export const ROUTES = {
   HOME: '/',
-  LOGIN: '/login',
-  SIGNUP: '/signup',
   TIMETABLE: '/timetable',
   TIMETABLE_APPLY: '/timetable/apply',
   TIMETABLE_EDIT: '/timetable/edit',
