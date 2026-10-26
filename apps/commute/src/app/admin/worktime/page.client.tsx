@@ -16,6 +16,7 @@ import {
   type ScheduleCellWorker,
 } from './_hooks/useWeekSchedule';
 import { getWeekStartKey, shiftWeek } from './_lib/week';
+import { formatMonthDay } from '@/shared/utils/formatDate';
 
 type RemoveTarget = { cell: ScheduleCell; user: WorkScheduleUser };
 
@@ -97,7 +98,7 @@ export default function PageClient() {
         title='인원을 빼시겠습니까?'
         description={
           removeTarget
-            ? `${removeTarget.user.userName} / ${removeTarget.cell.dateKey} ${removeTarget.cell.start}~${removeTarget.cell.end}`
+            ? `${removeTarget.user.userName} / ${formatMonthDay(removeTarget.cell.dateKey)} ${removeTarget.cell.start}-${removeTarget.cell.end}`
             : undefined
         }
         buttons={[

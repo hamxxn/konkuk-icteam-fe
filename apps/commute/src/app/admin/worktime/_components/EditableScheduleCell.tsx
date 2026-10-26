@@ -1,9 +1,9 @@
 'use client';
 
 import { useRef, useState } from 'react';
-import { IconAdd, IconClose } from '@konkuk-icteam-fe/design-system/assets';
+import { IconAdd } from '@konkuk-icteam-fe/design-system/assets';
 import { cn } from '@konkuk-icteam-fe/design-system/cn';
-import { IconButton, StateChip } from '@konkuk-icteam-fe/design-system/ui';
+import { TagChip } from '@konkuk-icteam-fe/design-system/ui';
 import { getWorkerChipTone } from '../../_lib/getWorkerChipTone';
 import type { WorkScheduleUser } from '../../_apis/workSchedules';
 import type { ScheduleCell, ScheduleCellWorker } from '../_hooks/useWeekSchedule';
@@ -33,18 +33,13 @@ export default function EditableScheduleCell({
     <>
       <div className='flex flex-wrap gap-[0.4rem]'>
         {cell.users.map((user) => (
-          <span key={user.userId} className='inline-flex items-center'>
-            <StateChip label={user.userName} tone={getWorkerChipTone(user.userId)} />
-            {isEditMode ? (
-              <IconButton
-                aria-label={`${user.userName} 빼기`}
-                className='text-red ml-[0.2rem]'
-                onClick={() => onRemoveRequest(cell, user)}
-              >
-                <IconClose aria-hidden className='h-[1.4rem] w-[1.4rem]' />
-              </IconButton>
-            ) : null}
-          </span>
+          <TagChip
+            key={user.userId}
+            label={user.userName}
+            tone={getWorkerChipTone(user.userId)}
+            // 편집 중일 때만 X로 뺄 수 있다
+            onRemove={isEditMode ? () => onRemoveRequest(cell, user) : undefined}
+          />
         ))}
       </div>
 
