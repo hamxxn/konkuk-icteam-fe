@@ -45,7 +45,15 @@
 컴포넌트를 어디에 둘지는 재사용 범위와 도메인 지식 보유 여부로 정한다.
 
 - `packages/design-system`: 도메인 지식(업무일지 항목/이슈 처리 내역 등)과 API 호출이 전혀 없는 순수 프레젠테이션 프리미티브(Button, Chip, Modal, Input 등). `apps/*`의 모든 앱에서 재사용된다.
-- 라우트 로컬 `components/`(각 `app/**/components`): 해당 라우트 하나에서만 쓰는 컴포넌트.
+- 앱 공통 `src/shared/ui`: 한 앱 안의 여러 라우트에서 쓰는 컴포넌트.
+- 라우트 로컬 `_components/`(각 `app/**/_components`): 해당 라우트 하나에서만 쓰는 컴포넌트. 화면이 여러 섹션으로 나뉘면 섹션별 폴더(kebab-case)를 만들어 그 안에 둔다
+  ```
+  admin/(dashboard)/_components/
+  ├── request-notice/RequestNoticeBar.tsx
+  ├── date-board/DateBoard.tsx, AssignTaskList.tsx, ...
+  └── notice/NoticePanel.tsx, NoticeForm.tsx, ...
+  ```
+- 디자인 시스템에 이미 있는 컴포넌트(Tabs, TagChip, Message, Toggle, Modal 등)는 앱에서 비슷한 컴포넌트를 새로 만들지 않고 그대로 쓴다. 모양만 조금 다르면 props·className으로 맞추고, 정말 없는 기능이면 디자인 시스템에 추가한다
 
 ## 유틸 함수 문서화
 
@@ -97,3 +105,27 @@
     );
   }
   ```
+
+## API 요청·응답의 날짜
+
+- 서버와 주고받는 요청·응답 타입에서 날짜는 무조건 `Date` 타입으로 선언한다. `date: string`, `createdAt: string`처럼 문자열로 두지 않는다
+  ```ts
+  // X
+  type TodoResponse = { date: string; createdAt: string };
+  // O
+  type TodoResponse = { date: Date; createdAt: Date };
+  ```
+- JSON에는 `Date`를 그대로 실을 수 없으니, 문자열 ↔ `Date` 변환은 API 호출 계층(`app/admin/_apis` 등)에서 한 번만 한다. 응답으로 받은 날짜는 이미 `Date`라서 화면에서 다시 바꾸지 않는다. 단, `DatePicker`처럼 `YYYY-MM-DD` 글자를 주고받는 입력 컴포넌트와는 화면에서 바꿔 넘긴다
+- 날짜 없이 시각만 있는 값(예: `'09:00'`)은 날짜가 아니므로 문자열로 둔다
+
+## 화면의 날짜 표기
+
+- 화면에 보이는 날짜는 `MM.DD`, 기간은 `MM.DD - MM.DD`로 통일한다 (예: `10.05`, `10.20 - 10.25`). 시각이 붙으면 `MM.DD HH:mm`
+- 직접 `getMonth() + 1`로 조합하지 않고 `@/shared/utils/formatDate`의 함수를 쓴다
+  ```ts
+  formatMonthDay('2026-10-05'); // '10.05'
+  formatDateRange(startDate, endDate); // '10.20 - 10.25'
+  formatMonthDayWithWeekday('2026-10-24'); // '10.24 (토)'
+  formatMonthDayTime(requestedAt); // '10.22 10:12'
+  ```
+- 달 제목처럼 날짜가 아닌 글자(예: `11월 근로신청`)는 이 규칙과 상관없다
