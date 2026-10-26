@@ -11,14 +11,13 @@ import { DateRange } from './types/dateRange';
 import {
   addMonths,
   compareISO,
-  createNextDateRange,
   daysInMonth,
   formatNumber,
-  getDateRangePosition,
   parseISO,
   startOfMonth,
   toISO,
-} from './utils/date';
+} from '@konkuk-icteam-fe/design-system/date';
+import { createNextDateRange, getDateRangePosition } from './utils/date';
 
 type DatePickerBaseProps = {
   // 오늘 날짜 (기본값: new Date())
@@ -52,11 +51,20 @@ export type RangeDatePickerProps = DatePickerBaseProps & {
   handleRangeChangeAction?: (nextRange: DateRange) => void;
 };
 
-export type DatePickerProps = SingleDatePickerProps | RangeDatePickerProps;
+export type MultipleDatePickerProps = DatePickerBaseProps & {
+  mode: 'multiple';
+  // 고른 날짜들 (YYYY-MM-DD). 누를 때마다 넣고 뺀다
+  selectedDates?: string[];
+  handleDatesChangeAction?: (nextDates: string[]) => void;
+};
+
+export type DatePickerProps =
+  SingleDatePickerProps | RangeDatePickerProps | MultipleDatePickerProps;
 
 /**
  * 날짜 선택 컴포넌트
- * - 하루 선택(mode='single', 기본값)과 기간 선택(mode='range') 지원
+ * - 하루 선택(mode='single', 기본값), 기간 선택(mode='range'), 여러 날짜 선택(mode='multiple') 지원
+ * - 여러 날짜 선택: 누를 때마다 그 날짜를 넣고 빼며, 고른 날짜는 날짜순으로 넘긴다
  * - 기간 선택: 첫 클릭이 시작일, 이후 클릭이 종료일. 시작일보다 이전이거나 사이에 disabledDates가 있으면 새 시작일로 다시 시작
  * - 월은 제어형/비제어형 모두 지원
  * - minDate/maxDate 범위와 disabledDates로 선택 가능한 날짜 제한 지원
@@ -77,6 +85,12 @@ export type DatePickerProps = SingleDatePickerProps | RangeDatePickerProps;
  *   selectedRange={{ start: '2024-01-10', end: '2024-01-15' }}
  *   handleRangeChangeAction={(next) => console.log(next)}
  * />
+ * @example
+ * <DatePicker
+ *   mode="multiple"
+ *   selectedDates={['2024-01-10', '2024-01-12']}
+ *   handleDatesChangeAction={(next) => console.log(next)}
+ * />
  * @returns DatePicker 컴포넌트
  */
 export default function DatePicker(props: DatePickerProps) {
@@ -91,12 +105,23 @@ export default function DatePicker(props: DatePickerProps) {
     disabledDates,
     color,
   } = props;
-  const selectedDate = props.mode === 'range' ? undefined : props.selectedDate;
+  const selectedDate =
+    props.mode === 'range' || props.mode === 'multiple' ? undefined : props.selectedDate;
+  const selectedDates = props.mode === 'multiple' ? (props.selectedDates ?? []) : undefined;
   const selectedRange = props.mode === 'range' ? props.selectedRange : undefined;
 
   const handleSelect = (iso: string) => {
     if (props.mode === 'range') {
       props.handleRangeChangeAction?.(createNextDateRange(props.selectedRange, iso, disabledDates));
+      return;
+    }
+    if (props.mode === 'multiple') {
+      const currentDates = props.selectedDates ?? [];
+      props.handleDatesChangeAction?.(
+        currentDates.includes(iso)
+          ? currentDates.filter((date) => date !== iso)
+          : [...currentDates, iso].sort(compareISO),
+      );
       return;
     }
     props.handleDateChangeAction?.(iso);
@@ -235,9 +260,11 @@ export default function DatePicker(props: DatePickerProps) {
                     iso={cell.iso}
                     isDisabled={cell.isDisabled}
                     isSelected={
-                      selectedRange
-                        ? selectedRange.start === cell.iso || selectedRange.end === cell.iso
-                        : selectedDate === cell.iso
+                      selectedDates
+                        ? selectedDates.includes(cell.iso)
+                        : selectedRange
+                          ? selectedRange.start === cell.iso || selectedRange.end === cell.iso
+                          : selectedDate === cell.iso
                     }
                     rangePosition={getDateRangePosition(cell.iso, selectedRange)}
                     isToday={cell.iso === todayISO}
