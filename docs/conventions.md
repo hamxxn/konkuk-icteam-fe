@@ -48,7 +48,7 @@
 - 앱 공통 `src/shared/ui`: 한 앱 안의 여러 라우트에서 쓰는 컴포넌트.
 - 라우트 로컬 `_components/`(각 `app/**/_components`): 해당 라우트 하나에서만 쓰는 컴포넌트. 화면이 여러 섹션으로 나뉘면 섹션별 폴더(kebab-case)를 만들어 그 안에 둔다
   ```
-  admin/(dashboard)/_components/
+  (admin)/dashboard/_components/
   ├── request-notice/RequestNoticeBar.tsx
   ├── date-board/DateBoard.tsx, AssignTaskList.tsx, ...
   └── notice/NoticePanel.tsx, NoticeForm.tsx, ...
@@ -115,7 +115,7 @@
   // O
   type TodoResponse = { date: Date; createdAt: Date };
   ```
-- JSON에는 `Date`를 그대로 실을 수 없으니, 문자열 ↔ `Date` 변환은 API 호출 계층(`app/admin/_apis` 등)에서 한 번만 한다. 응답으로 받은 날짜는 이미 `Date`라서 화면에서 다시 바꾸지 않는다. 단, `DatePicker`처럼 `YYYY-MM-DD` 글자를 주고받는 입력 컴포넌트와는 화면에서 바꿔 넘긴다
+- JSON에는 `Date`를 그대로 실을 수 없으니, 문자열 ↔ `Date` 변환은 API 호출 계층(`app/(admin)/_apis` 등)에서 한 번만 한다. 응답으로 받은 날짜는 이미 `Date`라서 화면에서 다시 바꾸지 않는다. 단, `DatePicker`처럼 `YYYY-MM-DD` 글자를 주고받는 입력 컴포넌트와는 화면에서 바꿔 넘긴다
 - 날짜 없이 시각만 있는 값(예: `'09:00'`)은 날짜가 아니므로 문자열로 둔다
 
 ## 화면의 날짜 표기
