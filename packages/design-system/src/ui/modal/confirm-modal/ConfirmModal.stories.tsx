@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import Textarea from '../../input/textarea/Textarea';
 import ConfirmModal from './ConfirmModal';
 
 const meta: Meta<typeof ConfirmModal> = {
@@ -37,3 +38,13 @@ export default meta;
 type Story = StoryObj<typeof ConfirmModal>;
 
 export const Default: Story = {};
+
+// 제목과 버튼 사이에 요약 표나 입력칸 같은 내용을 넣을 수 있다
+export const WithContent: Story = {
+  args: {
+    title: '반려하시겠습니까?',
+    description: '반려 사유는 근로학생에게 그대로 보입니다.',
+    layoutClassName: 'w-[40rem]',
+    children: <Textarea aria-label='반려 사유' placeholder='반려 사유를 입력해 주세요.' rows={4} />,
+  },
+};
