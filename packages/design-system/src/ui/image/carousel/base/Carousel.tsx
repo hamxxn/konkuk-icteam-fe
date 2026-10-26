@@ -3,7 +3,7 @@
 import * as React from 'react';
 import useEmblaCarousel, { type UseEmblaCarouselType } from 'embla-carousel-react';
 import { cn } from '@konkuk-icteam-fe/design-system/cn';
-import { IconArrowBack, IconArrowForward } from '@konkuk-icteam-fe/design-system/assets';
+import { IconArrowLeft, IconArrowRight } from '@konkuk-icteam-fe/design-system/assets';
 
 type CarouselApi = UseEmblaCarouselType[1];
 type UseCarouselParameters = Parameters<typeof useEmblaCarousel>;
@@ -176,7 +176,7 @@ function CarouselPrevious({ className, ...props }: React.ComponentProps<'button'
       onClick={scrollPrev}
       {...props}
     >
-      <IconArrowBack className='text-black-1' />
+      <IconArrowLeft className='text-black-1' />
       <span className='sr-only'>Previous slide</span>
     </button>
   );
@@ -200,7 +200,7 @@ function CarouselNext({ className, ...props }: React.ComponentProps<'button'>) {
       onClick={scrollNext}
       {...props}
     >
-      <IconArrowForward className='text-black-1' />
+      <IconArrowRight className='text-black-1' />
       <span className='sr-only'>Next slide</span>
     </button>
   );

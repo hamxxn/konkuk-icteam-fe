@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { IconAdd, IconArrowBack, IconSearch } from '@konkuk-icteam-fe/design-system/assets';
+import { IconAdd, IconArrowLeft, IconSearch } from '@konkuk-icteam-fe/design-system/assets';
 import Header from './Header';
 
 const meta: Meta<typeof Header> = {
@@ -51,7 +51,7 @@ type StoryHeader = StoryObj<typeof Header>;
 
 export const Default: StoryHeader = {
   args: {
-    left: <IconArrowBack />,
+    left: <IconArrowLeft />,
     center: <span className='text-black'>Title</span>,
     right: <IconSearch />,
     isFixed: true,
@@ -68,7 +68,7 @@ export const WithCenterAndRight: StoryHeader = {
 
 export const WithLeftAndRight: StoryHeader = {
   args: {
-    left: <IconArrowBack />,
+    left: <IconArrowLeft />,
     right: <IconSearch />,
     isFixed: true,
   },
@@ -76,7 +76,7 @@ export const WithLeftAndRight: StoryHeader = {
 
 export const WithLeftAndCenter: StoryHeader = {
   args: {
-    left: <IconArrowBack />,
+    left: <IconArrowLeft />,
     center: <span className='text-black'>Settings</span>,
     isFixed: true,
   },
@@ -84,7 +84,7 @@ export const WithLeftAndCenter: StoryHeader = {
 
 export const WithLeftAndCenterAndRight: StoryHeader = {
   args: {
-    left: <IconArrowBack />,
+    left: <IconArrowLeft />,
     center: <span className='text-black'>My List</span>,
     right: <IconAdd />,
     isFixed: true,
