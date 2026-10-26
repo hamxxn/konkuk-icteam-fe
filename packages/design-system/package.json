@@ -17,7 +17,8 @@
     "build-storybook": "storybook build",
     "build:icons": "tsx scripts/generate-icon-exports.ts",
     "build:ui": "tsx scripts/generate-ui-exports.ts",
-    "test": "vitest run --project storybook"
+    "test": "vitest run --project storybook",
+    "test:unit": "vitest run --project unit"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.23",
