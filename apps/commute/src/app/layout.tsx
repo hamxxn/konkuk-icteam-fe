@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import BottomNav from '@/shared/ui/bottom-nav/BottomNav';
 
 import './globals.css';
 
@@ -11,11 +10,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: LayoutProps<'/'>) {
   return (
     <html lang='ko' className='h-full'>
-      <body className='min-h-screen bg-gray-50'>
-        {children}
-        {/* 홈·시간표에서만 보인다. 여기 한 번만 두어야 화면을 옮겨도 남아서 탭 이동 애니메이션이 이어진다 */}
-        <BottomNav />
-      </body>
+      <body className='min-h-screen bg-gray-50'>{children}</body>
     </html>
   );
 }

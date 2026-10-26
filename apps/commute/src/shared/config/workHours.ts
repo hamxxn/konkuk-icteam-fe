@@ -1,8 +1,5 @@
-// 근로학생이 일할 수 있는 시간 한도. 고정값이라 프론트에서 관리한다
-export const WORK_HOUR_LIMITS = {
-  week: 13,
-  month: 27,
-} as const;
+// 주·월 근로시간 기준(최소·최대)과 동시 근무 인원은 관리자가 달마다 정한다 (WorkApplicationSettings)
+// 여기에는 달마다 바뀌지 않는 규칙만 둔다
 
 // 근무 한 번(이어진 구간)의 최소 시간
 export const MIN_WORK_HOURS_PER_SHIFT = 1;

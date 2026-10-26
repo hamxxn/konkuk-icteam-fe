@@ -48,3 +48,15 @@ export const formatMonthDayWithWeekday = (date: DateInput) =>
  */
 export const formatMonthDayTime = (date: Date) =>
   `${formatMonthDay(date)} ${formatNumber(date.getHours())}:${formatNumber(date.getMinutes())}`;
+
+/**
+ * 날짜의 연·월을 YYYY.MM으로 바꿉니다. 근로 시작 달처럼 날짜가 아니라 달을 보여 줄 때 씁니다.
+ * @param date 날짜 (Date 또는 YYYY-MM-DD)
+ * @returns YYYY.MM
+ * @example formatYearMonth(new Date(2025, 2, 1)); // '2025.03'
+ */
+export const formatYearMonth = (date: DateInput) => {
+  const value = toDate(date);
+
+  return `${value.getFullYear()}.${formatNumber(value.getMonth() + 1)}`;
+};

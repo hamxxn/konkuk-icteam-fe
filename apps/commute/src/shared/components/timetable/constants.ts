@@ -1,19 +1,9 @@
 import { SLOT_TIMES } from '@/shared/config/slot';
 
-import type { SlotStatus, TimeRange } from './types';
-import { convertTimeToMinutes } from './utils';
+import type { SlotStatus } from './types';
 
-// 운영 종료 시각. 이 시각부터 시작하는 칸은 표에 그리지 않는다.
-export const CLOSING_TIME = '17:30';
-
-// 점심시간. 이 시간 칸은 언제나 신청할 수 없다.
-export const LUNCH_BREAK: TimeRange = { start: '11:30', end: '13:00' };
-
-// 표에 그릴 칸 시작 시각 목록 ('09:00', '09:30', ..., '17:00')
-// 칸 뼈대는 공용 SLOT_TIMES를 따르고, 운영 종료 뒤 칸만 뺀다.
-export const SLOT_START_TIMES = SLOT_TIMES.map(({ start }) => start).filter(
-  (start) => convertTimeToMinutes(start) < convertTimeToMinutes(CLOSING_TIME),
-);
+// 표에 그릴 칸 시작 시각 목록 ('09:00', '10:00', ..., '17:00'). 관리자 시간표와 같은 한 시간 칸이다
+export const SLOT_START_TIMES = SLOT_TIMES.map(({ start }) => start);
 
 export const SLOT_STATUS_CLASS_NAME: Record<SlotStatus, string> = {
   AVAILABLE: 'border border-gray-400/30 bg-black-1',

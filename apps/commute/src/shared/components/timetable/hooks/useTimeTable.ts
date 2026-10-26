@@ -1,12 +1,13 @@
 import { useState } from 'react';
 
+import { parseISO } from '@konkuk-icteam-fe/design-system/date';
+
 import { SLOT_MINUTES } from '@/shared/config/slot';
-import { MIN_WORK_HOURS_PER_SHIFT, WORK_HOUR_LIMITS } from '@/shared/config/workHours';
+import { MIN_WORK_HOURS_PER_SHIFT } from '@/shared/config/workHours';
 
 import {
   APPLY_NEXT_STATUS,
   EDIT_NEXT_STATUS,
-  LUNCH_BREAK,
   SLOT_START_TIMES,
   WEEKDAY_LABELS,
 } from '../constants';
@@ -14,84 +15,27 @@ import type {
   SlotCellData,
   SlotEdit,
   SlotStatus,
-  TimeRange,
   TimeTableCell,
   TimeTableDay,
   TimeTableMode,
+  TimeTableSource,
 } from '../types';
-import { formatDateKey, formatMonthDay, hasTimeInRanges } from '../utils';
+import { convertTimeToMinutes, createSlotKey, formatDateKey, formatMonthDay } from '../utils';
 
-const MOCK_MAX_COUNT = 5;
 // 근무로 치는 상태. 삭제 예정은 빠질 칸이라 넣지 않는다.
 const WORKING_STATUSES: SlotStatus[] = ['APPLIED', 'PENDING_ADD'];
 const MINUTES_PER_HOUR = 60;
 const MIN_SLOTS_PER_SHIFT = (MIN_WORK_HOURS_PER_SHIFT * MINUTES_PER_HOUR) / SLOT_MINUTES;
-const MAX_SLOTS_PER_WEEK = (WORK_HOUR_LIMITS.week * MINUTES_PER_HOUR) / SLOT_MINUTES;
-const MOCK_WORKERS = ['김건국', '이정보', '박운영'];
 
-type DaySchedule = {
-  appliedTimes: TimeRange[];
-  // 운영시간·점심시간 말고 따로 막힌 시간
-  unavailableTimes: TimeRange[];
+// 칸이 시작하는 시각
+const getSlotStartDate = (dateKey: string, startTime: string) => {
+  const date = parseISO(dateKey);
+  date.setMinutes(convertTimeToMinutes(startTime));
+
+  return date;
 };
 
-// todo: 해당 년, 주차에 대한 데이터 조회로 교체. 지금은 요일(월~금)마다 같은 목업을 쓴다.
-const MOCK_WEEKDAY_SCHEDULES: DaySchedule[] = [
-  { appliedTimes: [], unavailableTimes: [] },
-  { appliedTimes: [{ start: '09:00', end: '11:30' }], unavailableTimes: [] },
-  {
-    appliedTimes: [
-      { start: '09:00', end: '11:30' },
-      { start: '13:00', end: '14:30' },
-    ],
-    unavailableTimes: [],
-  },
-  {
-    appliedTimes: [
-      { start: '10:00', end: '11:30' },
-      { start: '13:00', end: '17:30' },
-    ],
-    unavailableTimes: [],
-  },
-  { appliedTimes: [], unavailableTimes: [] },
-];
-
-const EMPTY_DAY_SCHEDULE: DaySchedule = { appliedTimes: [], unavailableTimes: [] };
-
-const createSlotKey = (dateKey: string, startTime: string) => `${dateKey}-${startTime}`;
-
-// 다음 달에 이미 신청해 둔 근무 목업. 신청 화면에서 마감 전까지 바꿀 수 있다.
-const MOCK_NEXT_MONTH_WEEKDAY_SCHEDULES: DaySchedule[] = [
-  EMPTY_DAY_SCHEDULE,
-  { appliedTimes: [{ start: '09:00', end: '11:00' }], unavailableTimes: [] },
-  EMPTY_DAY_SCHEDULE,
-  { appliedTimes: [{ start: '13:00', end: '15:00' }], unavailableTimes: [] },
-  EMPTY_DAY_SCHEDULE,
-];
-
-// 'YYYY-MM-DD'의 연·월을 월 단위 순번으로 바꾼다. 두 날짜가 몇 달 차이인지 셀 때 쓴다.
-const getMonthIndex = (dateKey: string) => {
-  const [year = 0, month = 1] = dateKey.split('-').map(Number);
-
-  return year * 12 + month;
-};
-
-// todo: 실제 조회 데이터로 교체. 목업은 이번 달과 다음 달에만 근무가 있다.
-const getMockDaySchedule = (dateKey: string, todayKey: string) => {
-  const [year = 0, month = 1, day = 1] = dateKey.split('-').map(Number);
-  const weekdayIndex = new Date(year, month - 1, day).getDay() - 1;
-  const monthOffset = getMonthIndex(dateKey) - getMonthIndex(todayKey);
-  const schedules =
-    monthOffset === 0
-      ? MOCK_WEEKDAY_SCHEDULES
-      : monthOffset === 1
-        ? MOCK_NEXT_MONTH_WEEKDAY_SCHEDULES
-        : [];
-
-  return schedules[weekdayIndex] ?? EMPTY_DAY_SCHEDULE;
-};
-
-// 이어진 근무 칸 중 최소 근무 시간보다 짧은 구간이 있는지 확인한다. 점심·신청 불가 칸에서 구간이 끊긴다.
+// 이어진 근무 칸 중 최소 근무 시간보다 짧은 구간이 있는지 확인한다. 신청 불가 칸에서 구간이 끊긴다.
 const checkHasShortShift = (statuses: SlotStatus[]) => {
   const shiftLengths = statuses.reduce<number[]>((lengths, status, index) => {
     if (!WORKING_STATUSES.includes(status)) return lengths;
@@ -104,30 +48,19 @@ const checkHasShortShift = (statuses: SlotStatus[]) => {
   return shiftLengths.some((length) => length < MIN_SLOTS_PER_SHIFT);
 };
 
-// 서버에서 받은 원래 상태. 추가·삭제 예정은 edit 모드에서 사용자가 만든다.
-// 점심시간은 데이터와 상관없이 언제나 신청 불가다.
-const getBaseSlotStatus = (
-  { appliedTimes, unavailableTimes }: DaySchedule,
-  startTime: string,
-): SlotStatus => {
-  if (hasTimeInRanges([LUNCH_BREAK, ...unavailableTimes], startTime)) return 'UNAVAILABLE';
-
-  return hasTimeInRanges(appliedTimes, startTime) ? 'APPLIED' : 'AVAILABLE';
-};
-
 const createDay = (date: Date, index: number): TimeTableDay => ({
   date: formatDateKey(date),
   label: WEEKDAY_LABELS[index] ?? '',
   dateLabel: formatMonthDay(date),
 });
 
-// dates: 표에 그릴 월~금 날짜
-export const useTimeTable = (mode: TimeTableMode, dates: Date[]) => {
+// dates: 표에 그릴 월~금 날짜, source: 화면이 조회한 근무·기준 데이터
+export const useTimeTable = (mode: TimeTableMode, dates: Date[], source: TimeTableSource) => {
   // edit·apply 모드에서 사용자가 바꾼 슬롯. key는 createSlotKey로 만든다.
   // 주차를 옮겨도 남아 있어서 여러 주를 한 번에 고칠 수 있다.
   const [editedSlots, setEditedSlots] = useState<Record<string, SlotEdit>>({});
-  // 'YYYY-MM-DD'는 문자열 비교로 날짜 순서를 알 수 있다.
-  const [todayKey] = useState(() => formatDateKey(new Date()));
+  const isEditable = mode === 'edit' || mode === 'apply';
+  const maxSlotsPerWeek = (source.weeklyMaxHours * MINUTES_PER_HOUR) / SLOT_MINUTES;
 
   // 칸을 눌렀을 때 바뀌는 상태. 수정은 예정 상태를 거치고, 신청은 바로 바뀐다.
   const nextStatusMap = mode === 'apply' ? APPLY_NEXT_STATUS : EDIT_NEXT_STATUS;
@@ -144,14 +77,17 @@ export const useTimeTable = (mode: TimeTableMode, dates: Date[]) => {
     setEditedSlots({});
   };
 
-  // 서버에서 받은 원래 상태
-  const getOriginalStatus = (dateKey: string, startTime: string) =>
-    getBaseSlotStatus(getMockDaySchedule(dateKey, todayKey), startTime);
+  // 서버에서 받은 원래 상태. 근무할 수 없는 날은 언제나 신청 불가다.
+  const getOriginalStatus = (dateKey: string, startTime: string): SlotStatus => {
+    if (source.unavailableDates.includes(dateKey)) return 'UNAVAILABLE';
+
+    return source.mySlotKeys.has(createSlotKey(dateKey, startTime)) ? 'APPLIED' : 'AVAILABLE';
+  };
 
   // 한 칸의 지금 상태. 사용자가 바꾼 값이 있으면 그것을, 없으면 원래 상태를 쓴다.
   const getSlotEdit = (dateKey: string, startTime: string): SlotEdit => {
-    // 수정·신청 화면에서 지난 날짜는 고칠 수 없으니 신청 불가로 막는다.
-    if ((mode === 'edit' || mode === 'apply') && dateKey < todayKey) {
+    // 수정·신청 화면에서 이미 지났거나 마감이 지난 칸은 고칠 수 없으니 신청 불가로 막는다.
+    if (isEditable && getSlotStartDate(dateKey, startTime) < source.editableFrom) {
       return { date: dateKey, startTime, status: 'UNAVAILABLE' };
     }
 
@@ -169,6 +105,24 @@ export const useTimeTable = (mode: TimeTableMode, dates: Date[]) => {
     ({ date, startTime, status }) => status !== getOriginalStatus(date, startTime),
   );
 
+  // 바꾼 뒤 내 근무가 되는 칸 전체 (보고 있지 않은 주 포함). 신청을 통째로 저장할 때 쓴다.
+  const getWorkingSlots = () => {
+    const originalSlots = [...source.mySlotKeys].map((key) => ({
+      date: key.slice(0, 10),
+      startTime: key.slice(11),
+    }));
+    const changedKeys = new Set(
+      changedSlots.map(({ date, startTime }) => createSlotKey(date, startTime)),
+    );
+
+    return [
+      ...originalSlots.filter(
+        ({ date, startTime }) => !changedKeys.has(createSlotKey(date, startTime)),
+      ),
+      ...changedSlots.filter(({ status }) => WORKING_STATUSES.includes(status)),
+    ];
+  };
+
   const dateKeys = dates.map(formatDateKey);
 
   // 보고 있는 주의 근무 칸 수. 주 최대 시간을 채우면 빈 칸을 더 누를 수 없다.
@@ -176,7 +130,7 @@ export const useTimeTable = (mode: TimeTableMode, dates: Date[]) => {
     .flatMap((dateKey) => SLOT_START_TIMES.map((startTime) => getSlotEdit(dateKey, startTime)))
     .filter(({ status }) => WORKING_STATUSES.includes(status)).length;
   const weekHours = (weekWorkingSlotCount * SLOT_MINUTES) / MINUTES_PER_HOUR;
-  const isWeekFull = weekWorkingSlotCount >= MAX_SLOTS_PER_WEEK;
+  const isWeekFull = weekWorkingSlotCount >= maxSlotsPerWeek;
 
   // 바꾼 칸이 있는 날 중 최소 근무 시간보다 짧은 구간이 생긴 날짜 ('YYYY-MM-DD', 오름차순)
   const getShortShiftDates = () =>
@@ -197,9 +151,8 @@ export const useTimeTable = (mode: TimeTableMode, dates: Date[]) => {
       return {
         mode,
         status,
-        // todo: 실제 슬롯 근무자 명단으로 교체
-        workers: status === 'APPLIED' ? MOCK_WORKERS : [],
-        maxCount: MOCK_MAX_COUNT,
+        workers: source.workersBySlot[key] ?? [],
+        maxCount: source.maxConcurrentWorkers,
       };
     }
 
@@ -223,5 +176,14 @@ export const useTimeTable = (mode: TimeTableMode, dates: Date[]) => {
   const days = dates.map(createDay);
   const cells = dateKeys.map(createDayCells);
 
-  return { days, cells, changedSlots, resetEdits, weekHours, isWeekFull, getShortShiftDates };
+  return {
+    days,
+    cells,
+    changedSlots,
+    resetEdits,
+    weekHours,
+    isWeekFull,
+    getShortShiftDates,
+    getWorkingSlots,
+  };
 };

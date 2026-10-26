@@ -1,22 +1,15 @@
-export const SLOTS_PER_DAY = 18; // 09:00 ~ 18:00 까지. 일주일은 총 90개
+import { formatNumber } from '@konkuk-icteam-fe/design-system/date';
 
-const SLOT_START_HOUR = 9;
-export const SLOT_MINUTES = 30;
+// 근무 칸은 한 시간 단위이고 09:00 ~ 18:00 까지 하루 9칸이다 (관리자 시간표와 같다)
+const FIRST_SLOT_HOUR = 9;
+const LAST_SLOT_HOUR = 18;
 
-const formatSlotTime = (minutesFromMidnight: number) => {
-  const hour = String(Math.floor(minutesFromMidnight / 60)).padStart(2, '0');
-  const minute = String(minutesFromMidnight % 60).padStart(2, '0');
+export const SLOT_MINUTES = 60;
 
-  return `${hour}:${minute}`;
-};
+export const SLOTS_PER_DAY = LAST_SLOT_HOUR - FIRST_SLOT_HOUR;
 
-// 표가 하루에 그리는 18칸의 시간 뼈대.
-// 서버가 일부 칸만 내려주더라도 표 모양이 흔들리지 않도록 여기서 기준을 잡는다.
-export const SLOT_TIMES = Array.from({ length: SLOTS_PER_DAY }, (_, index) => {
-  const startMinutes = SLOT_START_HOUR * 60 + index * SLOT_MINUTES;
-
-  return {
-    start: formatSlotTime(startMinutes),
-    end: formatSlotTime(startMinutes + SLOT_MINUTES),
-  };
-});
+// 하루 9칸의 시간 뼈대. 서버가 일부 칸만 내려주더라도 표 모양이 흔들리지 않도록 여기서 기준을 잡는다
+export const SLOT_TIMES = Array.from({ length: SLOTS_PER_DAY }, (_, index) => ({
+  start: `${formatNumber(FIRST_SLOT_HOUR + index)}:00`,
+  end: `${formatNumber(FIRST_SLOT_HOUR + index + 1)}:00`,
+}));

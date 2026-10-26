@@ -10,22 +10,6 @@ export const convertTimeToMinutes = (time: string) => {
   return hours * 60 + minutes;
 };
 
-/**
- * 시각이 시간 범위들 중 하나에 들어가는지 확인합니다. 시작은 포함하고 끝은 포함하지 않습니다.
- * @param ranges 'HH:MM' 형식의 시작·끝 시각 범위 목록
- * @param time 확인할 'HH:MM' 형식의 시각
- * @returns 범위 안에 있으면 true
- * @example const isLunch = hasTimeInRanges([{ start: '11:30', end: '13:00' }], '12:00'); // true
- */
-export const hasTimeInRanges = (ranges: { start: string; end: string }[], time: string) => {
-  const targetMinutes = convertTimeToMinutes(time);
-
-  return ranges.some(
-    ({ start, end }) =>
-      targetMinutes >= convertTimeToMinutes(start) && targetMinutes < convertTimeToMinutes(end),
-  );
-};
-
 const DAYS_PER_WEEK = 7;
 const WORKDAYS_PER_WEEK = 5;
 const MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1000;
@@ -55,14 +39,6 @@ export const formatMonthDay = (date: Date) => {
 
   return `${month}.${day}`;
 };
-
-/**
- * 'YYYY-MM-DD' 형식의 날짜 문자열을 'MM.DD' 형식으로 바꿉니다. Date가 있으면 formatMonthDay를 씁니다.
- * @param dateKey 'YYYY-MM-DD' 형식의 날짜
- * @returns 'MM.DD' 형식의 문자열
- * @example const label = formatDateKeyToMonthDay('2026-10-30'); // '10.30'
- */
-export const formatDateKeyToMonthDay = (dateKey: string) => dateKey.slice(5).replace('-', '.');
 
 /**
  * 날짜가 속한 주의 월요일을 구합니다.
@@ -133,19 +109,44 @@ export const getWeekdayDates = (monday: Date) =>
   Array.from({ length: WORKDAYS_PER_WEEK }, (_, index) => addDays(monday, index));
 
 /**
- * 오늘이 근로 신청 기간(시작일~마감일, 양 끝 포함) 안인지 확인합니다. 기간이 없으면 관리자가 아직 열지 않은 것으로 봅니다.
- * @param period 신청 기간
- * @param period.applyStartDate 신청 시작일 'YYYY-MM-DD' (없으면 null)
- * @param period.applyEndDate 신청 마감일 'YYYY-MM-DD' (없으면 null)
- * @param todayKey 오늘 'YYYY-MM-DD'
- * @returns 신청 기간 안이면 true
- * @example const isOpen = hasOpenApplyPeriod({ applyStartDate: '2026-10-20', applyEndDate: '2026-10-30' }, '2026-10-23'); // true
+ * 칸 하나를 가리키는 key를 만듭니다.
+ * @param dateKey 날짜 'YYYY-MM-DD'
+ * @param startTime 칸 시작 시각 'HH:MM'
+ * @returns 'YYYY-MM-DD HH:MM'
+ * @example const key = createSlotKey('2026-10-27', '09:00'); // '2026-10-27 09:00'
  */
-export const hasOpenApplyPeriod = (
-  { applyStartDate, applyEndDate }: { applyStartDate: string | null; applyEndDate: string | null },
-  todayKey: string,
-) =>
-  applyStartDate !== null &&
-  applyEndDate !== null &&
-  todayKey >= applyStartDate &&
-  todayKey <= applyEndDate;
+export const createSlotKey = (dateKey: string, startTime: string) => `${dateKey} ${startTime}`;
+
+/**
+ * 한 시간 칸들을 날짜별로 이어진 구간으로 묶습니다. 요청·신청을 보낼 때 씁니다.
+ * @param slots 칸 목록
+ * @param slots[].date 날짜 'YYYY-MM-DD'
+ * @param slots[].startTime 칸 시작 시각 'HH:MM'
+ * @param slotMinutes 칸 하나의 길이 (분)
+ * @returns 날짜·시작 시각 순으로 정렬한 구간 목록 (date는 'YYYY-MM-DD', start·end는 'HH:MM')
+ * @example const ranges = mergeSlotsToRanges([{ date: '2026-10-27', startTime: '09:00' }, { date: '2026-10-27', startTime: '10:00' }], 60); // [{ date: '2026-10-27', start: '09:00', end: '11:00' }]
+ */
+export const mergeSlotsToRanges = (
+  slots: { date: string; startTime: string }[],
+  slotMinutes: number,
+) => {
+  const toTime = (minutes: number) =>
+    `${String(Math.floor(minutes / 60)).padStart(2, '0')}:${String(minutes % 60).padStart(2, '0')}`;
+  const sortedSlots = [...slots].sort((a, b) =>
+    createSlotKey(a.date, a.startTime).localeCompare(createSlotKey(b.date, b.startTime)),
+  );
+
+  return sortedSlots.reduce<{ date: string; start: string; end: string }[]>((ranges, slot) => {
+    const startMinutes = convertTimeToMinutes(slot.startTime);
+    const lastRange = ranges.at(-1);
+    const isContinued =
+      lastRange?.date === slot.date && convertTimeToMinutes(lastRange.end) === startMinutes;
+
+    return isContinued
+      ? [...ranges.slice(0, -1), { ...lastRange, end: toTime(startMinutes + slotMinutes) }]
+      : [
+          ...ranges,
+          { date: slot.date, start: slot.startTime, end: toTime(startMinutes + slotMinutes) },
+        ];
+  }, []);
+};

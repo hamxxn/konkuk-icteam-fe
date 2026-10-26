@@ -13,12 +13,6 @@ export type TimeTableMode = 'read' | 'detail' | 'edit' | 'apply';
 // - APPLIED: 신청 완료
 export type SlotStatus = 'AVAILABLE' | 'UNAVAILABLE' | 'PENDING_ADD' | 'PENDING_DELETE' | 'APPLIED';
 
-// 'HH:MM' 형식의 시작·끝 시각. 시작은 포함, 끝은 포함하지 않는다.
-export type TimeRange = {
-  start: string;
-  end: string;
-};
-
 // edit 모드에서 바뀐 칸 하나. 수정 요청을 보낼 때 이 목록을 쓴다.
 export type SlotEdit = {
   date: string; // YYYY-MM-DD
@@ -43,3 +37,19 @@ export type SlotCellData =
 
 // 표가 그릴 셀 하나. 렌더링용 key만 덧붙인다.
 export type TimeTableCell = SlotCellData & { key: string };
+
+// 표가 칸 상태를 정할 때 쓰는 서버 데이터. 화면마다 조회한 응답으로 만들어 넘긴다
+export type TimeTableSource = {
+  // 처음(서버 기준) 내 근무·신청 칸. key는 createSlotKey로 만든다
+  mySlotKeys: Set<string>;
+  // detail 모드에서 칸마다 보여 줄 근무자 이름 (칸 key → 이름 목록)
+  workersBySlot: Record<string, string[]>;
+  // 한 칸에 함께 근무할 수 있는 최대 인원
+  maxConcurrentWorkers: number;
+  // 하루 통째로 근무할 수 없는 날 ('YYYY-MM-DD'). 공휴일과 관리자가 막은 날
+  unavailableDates: string[];
+  // 주 최대 근로시간. 채우면 빈 칸을 더 고를 수 없다
+  weeklyMaxHours: number;
+  // edit·apply에서 이 시각보다 먼저 시작하는 칸은 바꿀 수 없다
+  editableFrom: Date;
+};

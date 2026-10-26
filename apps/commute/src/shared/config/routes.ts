@@ -4,10 +4,11 @@ export const ROUTES = {
   TIMETABLE: '/timetable',
   TIMETABLE_APPLY: '/timetable/apply',
   TIMETABLE_EDIT: '/timetable/edit',
-  ADMIN_HOME: '/admin',
-  ADMIN_WORKTIME: '/admin/worktime',
-  ADMIN_WORKTIME_CHANGE_REQUESTS: '/admin/worktime/change-requests',
-  ADMIN_WORK_APPLICATIONS: '/admin/work-applications',
-  ADMIN_STUDENTS: '/admin/students',
-  ADMIN_TASKS: '/admin/tasks',
+  // 관리자 화면 ((admin) 그룹). 주소에 /admin을 붙이지 않는다
+  ADMIN_HOME: '/dashboard',
+  ADMIN_WORKTIME: '/worktime',
+  ADMIN_WORKTIME_CHANGE_REQUESTS: '/worktime/change-requests',
+  ADMIN_WORK_APPLICATIONS: '/work-applications',
+  ADMIN_STUDENTS: '/students',
+  ADMIN_TASKS: '/tasks',
 } as const;
