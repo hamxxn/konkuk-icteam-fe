@@ -2,11 +2,12 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect } from 'storybook/test';
 import { useState } from 'react';
 import { DATE_COLOR } from '../cell/constants/color';
-import DatePicker, {
+import DatePicker from './DatePicker';
+import {
   MultipleDatePickerProps,
   RangeDatePickerProps,
   SingleDatePickerProps,
-} from './DatePicker';
+} from './types/datePickerProps';
 import { DateRange } from './types/dateRange';
 import { toISO } from '@konkuk-icteam-fe/design-system/date';
 

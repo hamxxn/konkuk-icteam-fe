@@ -4,10 +4,9 @@ import { useMemo, useState } from 'react';
 import { IconArrowLeft, IconArrowRight } from '@konkuk-icteam-fe/design-system/assets';
 import IconButton from '../../button/icon-button/IconButton';
 import DateCell from '../cell/DateCell';
-import { DateColor } from '../cell/constants/color';
 import { WEEKDAY_LABELS } from './constants/date';
 import { CalendarCell } from './types/calendarCell';
-import { DateRange } from './types/dateRange';
+import { DatePickerProps } from './types/datePickerProps';
 import {
   addMonths,
   compareISO,
@@ -18,48 +17,6 @@ import {
   toISO,
 } from '@konkuk-icteam-fe/design-system/date';
 import { createNextDateRange, getDateRangePosition } from './utils/date';
-
-type DatePickerBaseProps = {
-  // 오늘 날짜 (기본값: new Date())
-  today?: Date;
-  // 제어형 월 초기값
-  viewDateMonth?: Date;
-  // 제어형이 아닐 때 월 초기값
-  defaultViewDateMonth?: Date;
-  handleMonthChangeAction?: (nextMonth: Date) => void;
-  minDate?: string;
-  maxDate?: string;
-  // 선택할 수 없는 날짜 목록 (YYYY-MM-DD)
-  disabledDates?: string[];
-  // 공통 옵션
-  disablePastDates?: boolean;
-  // 선택된 날짜(원)와 기간 띠의 색 (기본값: 'black')
-  color?: DateColor;
-};
-
-export type SingleDatePickerProps = DatePickerBaseProps & {
-  // 생략하면 'single'
-  mode?: 'single';
-  // YYYY-MM-DD
-  selectedDate?: string;
-  handleDateChangeAction?: (nextDate: string) => void;
-};
-
-export type RangeDatePickerProps = DatePickerBaseProps & {
-  mode: 'range';
-  selectedRange?: DateRange;
-  handleRangeChangeAction?: (nextRange: DateRange) => void;
-};
-
-export type MultipleDatePickerProps = DatePickerBaseProps & {
-  mode: 'multiple';
-  // 고른 날짜들 (YYYY-MM-DD). 누를 때마다 넣고 뺀다
-  selectedDates?: string[];
-  handleDatesChangeAction?: (nextDates: string[]) => void;
-};
-
-export type DatePickerProps =
-  SingleDatePickerProps | RangeDatePickerProps | MultipleDatePickerProps;
 
 /**
  * 날짜 선택 컴포넌트
@@ -109,6 +66,13 @@ export default function DatePicker(props: DatePickerProps) {
     props.mode === 'range' || props.mode === 'multiple' ? undefined : props.selectedDate;
   const selectedDates = props.mode === 'multiple' ? (props.selectedDates ?? []) : undefined;
   const selectedRange = props.mode === 'range' ? props.selectedRange : undefined;
+
+  // mode에 맞는 선택 값으로 그 날짜가 골라졌는지 확인한다
+  const checkDateSelected = (iso: string) => {
+    if (selectedDates) return selectedDates.includes(iso);
+    if (selectedRange) return selectedRange.start === iso || selectedRange.end === iso;
+    return selectedDate === iso;
+  };
 
   const handleSelect = (iso: string) => {
     if (props.mode === 'range') {
@@ -259,13 +223,7 @@ export default function DatePicker(props: DatePickerProps) {
                     value={String(cell.day)}
                     iso={cell.iso}
                     isDisabled={cell.isDisabled}
-                    isSelected={
-                      selectedDates
-                        ? selectedDates.includes(cell.iso)
-                        : selectedRange
-                          ? selectedRange.start === cell.iso || selectedRange.end === cell.iso
-                          : selectedDate === cell.iso
-                    }
+                    isSelected={checkDateSelected(cell.iso)}
                     rangePosition={getDateRangePosition(cell.iso, selectedRange)}
                     isToday={cell.iso === todayISO}
                     color={color}
