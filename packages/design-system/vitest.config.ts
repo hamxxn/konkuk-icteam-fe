@@ -10,6 +10,15 @@ import { playwright } from '@vitest/browser-playwright';
 export default defineConfig({
   test: {
     projects: [
+      // 순수 함수(lib) 테스트. 브라우저 없이 node에서 돈다
+      {
+        extends: true,
+        test: {
+          name: 'unit',
+          environment: 'node',
+          include: ['src/**/*.test.ts'],
+        },
+      },
       {
         extends: true,
         plugins: [

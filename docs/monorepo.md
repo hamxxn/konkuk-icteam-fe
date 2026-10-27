@@ -71,6 +71,7 @@ Next.js·TypeScript 환경을 기본 지원해서 초기 설정 부담이 적고
 
 ```
 apps/worklog     ──▶ design-system, typescript-config, eslint-config, tailwind-config
+apps/commute     ──▶ design-system, typescript-config, eslint-config, tailwind-config
 design-system    ──▶ typescript-config, eslint-config, tailwind-config
 typescript-config, eslint-config, tailwind-config ──▶ (의존 없음)
 ```
@@ -78,12 +79,12 @@ typescript-config, eslint-config, tailwind-config ──▶ (의존 없음)
 **Turborepo task graph**
 
 ```
-      design-system:build
-            │
-       worklog:build
+          design-system:build
+            ┌──────┴──────┐
+     worklog:build   commute:build
 ```
 
-`design-system`이 먼저 빌드되고, 그 결과를 `worklog`가 소비한다. 지금은 앱이 하나뿐이라 병렬 실행 효과보다는 "공유 패키지를 한 번만 빌드하고 여러 앱이 재사용" 효과가 핵심이고, 두 번째 앱이 생기면 `worklog:build`와 나란히 병렬로 실행된다.
+`design-system`이 먼저 빌드되고, 그 결과를 `worklog`와 `commute`가 소비한다. 공유 패키지는 한 번만 빌드하고, 두 앱의 빌드는 나란히 병렬로 실행된다.
 
 **캐싱 예시**
 
@@ -112,7 +113,8 @@ worklog:build  (cache hit)
 ```
 konkuk-icteam-fe/
 ├── apps/
-│   └── worklog/                # 업무일지
+│   ├── worklog/                # 업무일지
+│   └── commute/                # 출근부 (근로학생 화면 + 관리자 화면 /admin)
 ├── packages/
 │   ├── design-system/
 │   ├── eslint-config/
@@ -128,11 +130,12 @@ konkuk-icteam-fe/
 packages/design-system/
 ├── src/
 │   ├── ui/          # 도메인 지식·API 호출이 없는 순수 프레젠테이션 컴포넌트 (Button, Chip, Modal, Input 등)
-│   ├── icons/
-│   │   ├── svg/
-│   │   └── svg-fill/
+│   ├── assets/
+│   │   ├── svg/         # 원본 SVG
+│   │   └── components/  # svg에서 자동 생성한 아이콘 컴포넌트 (pnpm build:icons)
 │   └── lib/
-│       └── cn.ts
+│       ├── cn.ts        # 클래스 병합
+│       └── date.ts      # 날짜 유틸 (YYYY-MM-DD 변환 등)
 ```
 
 `docs/conventions.md`의 컴포넌트 배치 기준을 그대로 따른다 — 도메인 지식이 전혀 없는 순수 프레젠테이션 컴포넌트만 여기로, 도메인 지식은 있지만 앱 내에서 재사용되는 건 앱 로컬로 둔다.

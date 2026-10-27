@@ -7,7 +7,8 @@
   "exports": {
     "./ui": "./src/ui/index.ts",
     "./assets": "./src/assets/index.ts",
-    "./cn": "./src/lib/cn.ts"
+    "./cn": "./src/lib/cn.ts",
+    "./date": "./src/lib/date.ts"
   },
   "scripts": {
     "build": "pnpm run build:icons && pnpm run build:ui && tsc -p tsconfig.build.json",
@@ -16,7 +17,8 @@
     "build-storybook": "storybook build",
     "build:icons": "tsx scripts/generate-icon-exports.ts",
     "build:ui": "tsx scripts/generate-ui-exports.ts",
-    "test": "vitest run --project storybook"
+    "test": "vitest run --project storybook",
+    "test:unit": "vitest run --project unit"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.23",

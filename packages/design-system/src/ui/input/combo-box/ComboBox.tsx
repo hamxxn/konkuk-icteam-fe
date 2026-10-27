@@ -5,6 +5,7 @@ import { cn } from '@konkuk-icteam-fe/design-system/cn';
 import Input from '../base/Input';
 import { Command, CommandEmpty, CommandGroup, CommandItem, CommandList } from '../base/command';
 import useClickOutside from '../hooks/useClickOutside';
+import useComposingEnter from '../hooks/useComposingEnter';
 
 type ComboBoxProps = {
   options: string[];
@@ -15,6 +16,10 @@ type ComboBoxProps = {
   optionClassName?: string;
   optionWrapperClassName?: string;
   onBlur?: () => void;
+  // 열리자마자 바로 입력할 수 있게 입력칸에 초점을 둔다
+  autoFocus?: boolean;
+  // 눈에 보이는 라벨이 없을 때 스크린리더가 읽을 입력칸 이름
+  'aria-label'?: string;
 };
 
 export default function ComboBox({
@@ -26,6 +31,8 @@ export default function ComboBox({
   inputClassName,
   optionClassName,
   optionWrapperClassName,
+  autoFocus,
+  'aria-label': ariaLabel,
 }: ComboBoxProps) {
   const rootRef = useRef<HTMLDivElement>(null);
 
@@ -35,6 +42,11 @@ export default function ComboBox({
   const [uncontrolledQuery, setUncontrolledQuery] = useState('');
 
   const query = isControlled ? value : uncontrolledQuery;
+
+  // 방향키·Enter로 고를 항목. 입력칸이 cmdk 전용 입력이 아니라서 cmdk가 목록이 바뀔 때 강조를 다시 맞춰 주지 않는다.
+  // 그래서 강조한 항목이 목록에서 사라지면 첫 항목을 강조한다
+  const [highlightedOption, setHighlightedOption] = useState('');
+  const activeOption = options.includes(highlightedOption) ? highlightedOption : (options[0] ?? '');
 
   const setQuery = (next: string) => {
     if (!isControlled) setUncontrolledQuery(next);
@@ -48,6 +60,18 @@ export default function ComboBox({
     setIsOpen(false);
   };
 
+  // 한글 조합 중 누른 Enter는 cmdk가 무시한다. 조합이 끝나 목록이 다시 그려진 뒤, 그때 강조된 항목을 직접 고른다
+  const selectHighlightedOption = () => {
+    requestAnimationFrame(() => {
+      const highlighted = rootRef.current
+        ?.querySelector('[cmdk-item][data-selected="true"]')
+        ?.getAttribute('data-value');
+      if (highlighted) handleOptionSelect(highlighted);
+    });
+  };
+
+  const { handleComposingEnter, handleCompositionEnd } = useComposingEnter(selectHighlightedOption);
+
   return (
     <div
       ref={rootRef}
@@ -59,14 +83,22 @@ export default function ComboBox({
         }
       }}
     >
-      <Command className='h-[4.2rem] w-full'>
+      <Command
+        className='h-[4.2rem] w-full'
+        value={activeOption}
+        onValueChange={setHighlightedOption}
+      >
         <Input
           placeholder={placeholder}
+          autoFocus={autoFocus}
+          aria-label={ariaLabel}
           hasBorder={false}
           onChange={(e) => {
             setQuery(e.target.value);
             setIsOpen(true);
           }}
+          onKeyDown={handleComposingEnter}
+          onCompositionEnd={handleCompositionEnd}
           value={query}
           className={cn('h-[4.2rem] w-full', inputClassName)}
         />

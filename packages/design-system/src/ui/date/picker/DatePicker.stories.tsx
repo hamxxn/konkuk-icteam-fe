@@ -2,9 +2,14 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect } from 'storybook/test';
 import { useState } from 'react';
 import { DATE_COLOR } from '../cell/constants/color';
-import DatePicker, { RangeDatePickerProps, SingleDatePickerProps } from './DatePicker';
+import DatePicker from './DatePicker';
+import {
+  MultipleDatePickerProps,
+  RangeDatePickerProps,
+  SingleDatePickerProps,
+} from './types/datePickerProps';
 import { DateRange } from './types/dateRange';
-import { toISO } from './utils/date';
+import { toISO } from '@konkuk-icteam-fe/design-system/date';
 
 const meta: Meta<typeof DatePicker> = {
   title: 'date/DatePicker',
@@ -181,5 +186,45 @@ export const SelectsRange: RangeStory = {
       .getByRole('button', { name: '2025-12-12' })
       .closest('[role="gridcell"]');
     await expect(middleCell).toHaveAttribute('aria-selected', 'true');
+  },
+};
+
+function MultipleTemplate(args: MultipleDatePickerProps) {
+  const [dates, setDates] = useState<string[]>(args.selectedDates ?? []);
+
+  return (
+    <div className='bg-black-1 p-[1.6rem]'>
+      <DatePicker
+        {...args}
+        selectedDates={dates}
+        handleDatesChangeAction={(next: string[]) => {
+          setDates(next);
+          args.handleDatesChangeAction?.(next);
+        }}
+      />
+      <div className='caption-12-md mt-[1.2rem] text-gray-500'>selected: {dates.join(', ')}</div>
+    </div>
+  );
+}
+
+type MultipleStory = StoryObj<MultipleDatePickerProps>;
+
+export const SelectsMultipleDates: MultipleStory = {
+  render: (args) => <MultipleTemplate {...args} />,
+  args: {
+    mode: 'multiple',
+    color: 'red',
+    defaultViewDateMonth: new Date(2025, 11, 1),
+    disablePastDates: false,
+  },
+  play: async ({ canvas, userEvent }) => {
+    await userEvent.click(canvas.getByRole('button', { name: '2025-12-15' }));
+    await userEvent.click(canvas.getByRole('button', { name: '2025-12-3' }));
+    // 고른 날짜는 날짜순으로 넘어온다
+    await expect(canvas.getByText('selected: 2025-12-03, 2025-12-15')).toBeVisible();
+
+    // 이미 고른 날짜를 다시 누르면 빠진다
+    await userEvent.click(canvas.getByRole('button', { name: '2025-12-15' }));
+    await expect(canvas.getByText('selected: 2025-12-03')).toBeVisible();
   },
 };

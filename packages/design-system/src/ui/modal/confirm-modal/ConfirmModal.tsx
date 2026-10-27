@@ -7,6 +7,8 @@ type ConfirmModalProps = {
   showCloseButton?: boolean;
   title: string;
   description?: string;
+  // 제목·설명과 버튼 사이에 넣을 내용 (요약 표, 입력칸 등)
+  children?: React.ReactNode;
   buttons: ModalButtonProps[];
   layoutClassName?: string;
   headerClassName?: string;
@@ -22,6 +24,7 @@ export default function ConfirmModal({
   showCloseButton = false,
   title,
   description,
+  children,
   buttons,
   layoutClassName,
   headerClassName,
@@ -60,6 +63,7 @@ export default function ConfirmModal({
           )}
         </div>
       </Modal.Header>
+      {children}
       <Modal.Footer className={cn('flex flex-row gap-[0.5rem]', footerClassName)}>
         <Modal.Buttons buttons={buttons} />
       </Modal.Footer>

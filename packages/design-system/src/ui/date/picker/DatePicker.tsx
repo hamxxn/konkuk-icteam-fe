@@ -4,59 +4,24 @@ import { useMemo, useState } from 'react';
 import { IconArrowLeft, IconArrowRight } from '@konkuk-icteam-fe/design-system/assets';
 import IconButton from '../../button/icon-button/IconButton';
 import DateCell from '../cell/DateCell';
-import { DateColor } from '../cell/constants/color';
 import { WEEKDAY_LABELS } from './constants/date';
 import { CalendarCell } from './types/calendarCell';
-import { DateRange } from './types/dateRange';
+import { DatePickerProps } from './types/datePickerProps';
 import {
   addMonths,
   compareISO,
-  createNextDateRange,
   daysInMonth,
   formatNumber,
-  getDateRangePosition,
   parseISO,
   startOfMonth,
   toISO,
-} from './utils/date';
-
-type DatePickerBaseProps = {
-  // 오늘 날짜 (기본값: new Date())
-  today?: Date;
-  // 제어형 월 초기값
-  viewDateMonth?: Date;
-  // 제어형이 아닐 때 월 초기값
-  defaultViewDateMonth?: Date;
-  handleMonthChangeAction?: (nextMonth: Date) => void;
-  minDate?: string;
-  maxDate?: string;
-  // 선택할 수 없는 날짜 목록 (YYYY-MM-DD)
-  disabledDates?: string[];
-  // 공통 옵션
-  disablePastDates?: boolean;
-  // 선택된 날짜(원)와 기간 띠의 색 (기본값: 'black')
-  color?: DateColor;
-};
-
-export type SingleDatePickerProps = DatePickerBaseProps & {
-  // 생략하면 'single'
-  mode?: 'single';
-  // YYYY-MM-DD
-  selectedDate?: string;
-  handleDateChangeAction?: (nextDate: string) => void;
-};
-
-export type RangeDatePickerProps = DatePickerBaseProps & {
-  mode: 'range';
-  selectedRange?: DateRange;
-  handleRangeChangeAction?: (nextRange: DateRange) => void;
-};
-
-export type DatePickerProps = SingleDatePickerProps | RangeDatePickerProps;
+} from '@konkuk-icteam-fe/design-system/date';
+import { createNextDateRange, getDateRangePosition } from './utils/date';
 
 /**
  * 날짜 선택 컴포넌트
- * - 하루 선택(mode='single', 기본값)과 기간 선택(mode='range') 지원
+ * - 하루 선택(mode='single', 기본값), 기간 선택(mode='range'), 여러 날짜 선택(mode='multiple') 지원
+ * - 여러 날짜 선택: 누를 때마다 그 날짜를 넣고 빼며, 고른 날짜는 날짜순으로 넘긴다
  * - 기간 선택: 첫 클릭이 시작일, 이후 클릭이 종료일. 시작일보다 이전이거나 사이에 disabledDates가 있으면 새 시작일로 다시 시작
  * - 월은 제어형/비제어형 모두 지원
  * - minDate/maxDate 범위와 disabledDates로 선택 가능한 날짜 제한 지원
@@ -77,6 +42,12 @@ export type DatePickerProps = SingleDatePickerProps | RangeDatePickerProps;
  *   selectedRange={{ start: '2024-01-10', end: '2024-01-15' }}
  *   handleRangeChangeAction={(next) => console.log(next)}
  * />
+ * @example
+ * <DatePicker
+ *   mode="multiple"
+ *   selectedDates={['2024-01-10', '2024-01-12']}
+ *   handleDatesChangeAction={(next) => console.log(next)}
+ * />
  * @returns DatePicker 컴포넌트
  */
 export default function DatePicker(props: DatePickerProps) {
@@ -91,12 +62,30 @@ export default function DatePicker(props: DatePickerProps) {
     disabledDates,
     color,
   } = props;
-  const selectedDate = props.mode === 'range' ? undefined : props.selectedDate;
+  const selectedDate =
+    props.mode === 'range' || props.mode === 'multiple' ? undefined : props.selectedDate;
+  const selectedDates = props.mode === 'multiple' ? (props.selectedDates ?? []) : undefined;
   const selectedRange = props.mode === 'range' ? props.selectedRange : undefined;
+
+  // mode에 맞는 선택 값으로 그 날짜가 골라졌는지 확인한다
+  const checkDateSelected = (iso: string) => {
+    if (selectedDates) return selectedDates.includes(iso);
+    if (selectedRange) return selectedRange.start === iso || selectedRange.end === iso;
+    return selectedDate === iso;
+  };
 
   const handleSelect = (iso: string) => {
     if (props.mode === 'range') {
       props.handleRangeChangeAction?.(createNextDateRange(props.selectedRange, iso, disabledDates));
+      return;
+    }
+    if (props.mode === 'multiple') {
+      const currentDates = props.selectedDates ?? [];
+      props.handleDatesChangeAction?.(
+        currentDates.includes(iso)
+          ? currentDates.filter((date) => date !== iso)
+          : [...currentDates, iso].sort(compareISO),
+      );
       return;
     }
     props.handleDateChangeAction?.(iso);
@@ -234,11 +223,7 @@ export default function DatePicker(props: DatePickerProps) {
                     value={String(cell.day)}
                     iso={cell.iso}
                     isDisabled={cell.isDisabled}
-                    isSelected={
-                      selectedRange
-                        ? selectedRange.start === cell.iso || selectedRange.end === cell.iso
-                        : selectedDate === cell.iso
-                    }
+                    isSelected={checkDateSelected(cell.iso)}
                     rangePosition={getDateRangePosition(cell.iso, selectedRange)}
                     isToday={cell.iso === todayISO}
                     color={color}

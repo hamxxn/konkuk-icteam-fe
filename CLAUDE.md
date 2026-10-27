@@ -24,6 +24,6 @@ pnpm format:check    # prettier 포맷 검사만
 
 ## 패키지 구성
 
-- `apps/*`: 실제 서비스 앱 (예: `apps/worklog`)
+- `apps/*`: 실제 서비스 앱 (`apps/worklog` 업무일지, `apps/commute` 출근부)
 - `packages/eslint-config`, `packages/typescript-config`, `packages/tailwind-config`: 앱 전역 공통 설정
-- `packages/design-system`: 아직 없음 — 실제 컴포넌트 작업이 시작되면 추가
+- `packages/design-system`: 모든 앱이 쓰는 UI 컴포넌트(`/ui`), 아이콘(`/assets`), 유틸(`/cn`, `/date`). 앱에서 비슷한 컴포넌트를 새로 만들기 전에 여기 있는지 먼저 확인한다

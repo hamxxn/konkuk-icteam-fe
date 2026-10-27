@@ -14,3 +14,4 @@ export * from './section-stack';
 export * from './slider';
 export * from './stepper';
 export * from './tabs';
+export * from './toggle';

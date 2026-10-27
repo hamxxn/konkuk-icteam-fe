@@ -28,7 +28,7 @@ import {
   useSectionStack,
   type DateRange,
 } from '@konkuk-icteam-fe/design-system/ui';
-import { IconArrowBack, IconClose, IconSearch } from '@konkuk-icteam-fe/design-system/assets';
+import { IconArrowLeft, IconClose, IconSearch } from '@konkuk-icteam-fe/design-system/assets';
 
 const CHIP_TONES = ['gray', 'blue', 'red', 'purple', 'green', 'black', 'white'] as const;
 
@@ -90,7 +90,7 @@ export default function Home() {
       <Section title='Header'>
         <div className='relative h-[6rem] border border-gray-50'>
           <Header
-            left={<IconArrowBack />}
+            left={<IconArrowLeft />}
             center={<span className='text-black'>Title</span>}
             right={<IconSearch />}
           />

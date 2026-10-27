@@ -1,0 +1,83 @@
+@import 'https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css';
+@import '@konkuk-icteam-fe/tailwind-config';
+
+/* 하단 내비게이션이 처음 나타날 때 아래에서 떠오른다 */
+@theme {
+  --animate-nav-rise: nav-rise 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+
+  @keyframes nav-rise {
+    from {
+      opacity: 0;
+      transform: translateY(2.4rem);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+/*
+ * 유리 질감 (Apple Liquid Glass 느낌). 유리 색은 glass-clear를 함께 붙여 정한다.
+ * - 흐림을 약하게 두어 뒤 내용이 맑게 비치고, 채도를 올려 색이 살아 보이게 한다
+ * - box-shadow: 윗변·왼쪽에 밝은 빛줄기, 아래·오른쪽에 약한 반사, 안쪽 은은한 빛(유리 두께)
+ * - ::before: 빛 받는 가장자리. 왼쪽 위와 오른쪽 아래 모서리가 밝게 빛난다
+ * - ::after: 왼쪽 위에서 퍼지는 둥근 반사광(볼록한 표면)
+ * 두 장식은 z-index -1이라 글자 뒤, 배경 위에 그려진다(isolation으로 이 요소 안에 가둔다).
+ */
+@utility glass {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  -webkit-backdrop-filter: blur(1rem) saturate(200%) brightness(1.1);
+  backdrop-filter: blur(1rem) saturate(200%) brightness(1.1);
+
+  box-shadow:
+    inset 0 0.1rem 0.1rem rgb(255 255 255 / 0.45),
+    inset 0.1rem 0 0.1rem rgb(255 255 255 / 0.18),
+    inset 0 -0.1rem 0.1rem rgb(255 255 255 / 0.12),
+    inset -0.1rem 0 0.1rem rgb(255 255 255 / 0.08),
+    inset 0 0 2rem rgb(255 255 255 / 0.06),
+    0 0.8rem 2.4rem rgb(0 0 0 / 0.12);
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    padding: 0.1rem;
+    border-radius: inherit;
+    background: linear-gradient(
+      135deg,
+      rgb(255 255 255 / 0.7),
+      rgb(255 255 255 / 0.05) 30%,
+      rgb(255 255 255 / 0) 55%,
+      rgb(255 255 255 / 0.35)
+    );
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    background: radial-gradient(
+      120% 90% at 20% 0%,
+      rgb(255 255 255 / 0.16) 0%,
+      rgb(255 255 255 / 0.04) 45%,
+      transparent 70%
+    );
+    pointer-events: none;
+  }
+}
+
+@utility glass-clear {
+  background: rgb(255 255 255 / 0.55);
+}
