@@ -1,8 +1,8 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import { cn } from '@konkuk-icteam-fe/design-system/cn';
-import { SearchBar } from '@konkuk-icteam-fe/design-system/ui';
+import { SearchBar, useComposingEnter } from '@konkuk-icteam-fe/design-system/ui';
 import { getWorkers, type Worker } from '../../_apis/workers';
 import { formatWorkerDetail } from '../_utils/workerLabel';
 
@@ -34,8 +34,6 @@ export default function AddWorkerPopover({
 }: AddWorkerPopoverProps) {
   const [keyword, setKeyword] = useState('');
   const [activeIndex, setActiveIndex] = useState(0);
-  // 한글 조합 중에 Enter를 눌렀는지. 조합이 끝나면 그때 고른다
-  const isEnterWhileComposingRef = useRef(false);
 
   const getCandidates = (searchKeyword: string) =>
     getWorkers().workers.filter(
@@ -51,6 +49,9 @@ export default function AddWorkerPopover({
     if (firstCandidate) onSelect(firstCandidate);
   };
 
+  // 한글 조합 중 누른 Enter는 조합이 끝난 뒤 확정된 글자로 고른다
+  const { handleComposingEnter, handleCompositionEnd } = useComposingEnter(selectFirstCandidate);
+
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Escape') {
       onClose();
@@ -65,23 +66,8 @@ export default function AddWorkerPopover({
     if (event.key !== 'Enter') return;
 
     event.preventDefault();
-    // 크롬: 조합 중에 Enter가 먼저 오고, 그다음 조합이 끝난다
-    if (event.nativeEvent.isComposing) {
-      isEnterWhileComposingRef.current = true;
-      return;
-    }
-    // 사파리: 조합이 먼저 끝나고, 그 뒤 keyCode 229인 Enter가 온다
-    if (event.keyCode === 229) {
-      selectFirstCandidate(event.currentTarget.value);
-      return;
-    }
+    if (handleComposingEnter(event)) return;
     if (activeWorker) onSelect(activeWorker);
-  };
-
-  const handleCompositionEnd = (event: React.CompositionEvent<HTMLInputElement>) => {
-    if (!isEnterWhileComposingRef.current) return;
-    isEnterWhileComposingRef.current = false;
-    selectFirstCandidate(event.currentTarget.value);
   };
 
   return (

@@ -1,6 +1,6 @@
 import { ArrowButton } from '@/shared/ui';
 
-type WeekNavigatorProps = {
+type MonthWeekNavigatorProps = {
   week: number;
   isPrevWeekDisabled: boolean;
   isNextWeekDisabled: boolean;
@@ -9,13 +9,13 @@ type WeekNavigatorProps = {
 };
 
 // 양 끝 원형 화살표 사이에 주차를 보여 준다. 이번 달 주차 끝에 닿으면 화살표가 막힌다.
-export default function WeekNavigator({
+export default function MonthWeekNavigator({
   week,
   isPrevWeekDisabled,
   isNextWeekDisabled,
   onPrevWeek,
   onNextWeek,
-}: WeekNavigatorProps) {
+}: MonthWeekNavigatorProps) {
   return (
     <div className='flex items-center gap-[1.2rem]'>
       <ArrowButton

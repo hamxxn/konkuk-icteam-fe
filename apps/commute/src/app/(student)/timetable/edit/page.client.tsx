@@ -27,7 +27,7 @@ import { SCHEDULE_CHANGE_RULES } from '@/shared/config/workHours';
 
 import BackHeader from '../_components/BackHeader';
 import SlotLegend from '../_components/SlotLegend';
-import WeekNavigator from '../_components/WeekNavigator';
+import MonthWeekNavigator from '../_components/MonthWeekNavigator';
 import WorkRuleNotice from '../_components/WorkRuleNotice';
 import { EDIT_LEGEND_ITEMS } from '../_constants/slotLegend';
 import { useLeaveGuard } from '../_hooks/useLeaveGuard';
@@ -103,7 +103,7 @@ export default function PageClient() {
         onBack={handleBack}
       />
       <div className='flex justify-center'>
-        <WeekNavigator
+        <MonthWeekNavigator
           week={tableWeek.week}
           isPrevWeekDisabled={tableWeek.isPrevWeekDisabled}
           isNextWeekDisabled={tableWeek.isNextWeekDisabled}

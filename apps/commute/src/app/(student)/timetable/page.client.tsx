@@ -12,7 +12,7 @@ import { useTimeTableWeek } from './_components/timetable/hooks/useTimeTableWeek
 import { getMonthWeekInfo } from '@/shared/utils/week';
 import { ROUTES } from '@/shared/config/routes';
 
-import WeekNavigator from './_components/WeekNavigator';
+import MonthWeekNavigator from './_components/MonthWeekNavigator';
 import WorkRuleNotice from './_components/WorkRuleNotice';
 import { createScheduleSource } from './_lib/createTimeTableSource';
 
@@ -51,7 +51,7 @@ export default function PageClient() {
 
       <div className='grid grid-cols-[1fr_auto_1fr] items-center'>
         <div />
-        <WeekNavigator
+        <MonthWeekNavigator
           week={tableWeek.week}
           isPrevWeekDisabled={tableWeek.isPrevWeekDisabled}
           isNextWeekDisabled={tableWeek.isNextWeekDisabled}

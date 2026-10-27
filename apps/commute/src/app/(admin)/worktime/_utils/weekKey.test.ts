@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { formatWeekRange, getWeekDays, getWeekStartKey, shiftWeek } from './week';
+import { formatWeekRange, getWeekDays, getWeekStartKey, shiftWeek } from './weekKey';
 
-describe('week', () => {
+describe('weekKey', () => {
   it('날짜가 속한 주의 월요일을 얻는다. 일요일은 지난 월요일 주다', () => {
     expect(getWeekStartKey(new Date(2026, 9, 24))).toBe('2026-10-19');
     expect(getWeekStartKey(new Date(2026, 9, 19))).toBe('2026-10-19');

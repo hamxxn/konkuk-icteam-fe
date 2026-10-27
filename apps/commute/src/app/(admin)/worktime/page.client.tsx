@@ -8,14 +8,14 @@ import type { WorkScheduleUser } from '../_apis/workSchedules';
 import EditableScheduleCell from './_components/EditableScheduleCell';
 import PendingRequestsPanel from './_components/PendingRequestsPanel';
 import QuickSearchPanel from './_components/QuickSearchPanel';
-import WeekNavigator from './_components/WeekNavigator';
+import WeekRangeNavigator from './_components/WeekRangeNavigator';
 import WeekScheduleGrid from './_components/WeekScheduleGrid';
 import {
   useWeekSchedule,
   type ScheduleCell,
   type ScheduleCellWorker,
 } from './_hooks/useWeekSchedule';
-import { getWeekStartKey, shiftWeek } from './_utils/week';
+import { getWeekStartKey, shiftWeek } from './_utils/weekKey';
 import { formatMonthDay } from '@/shared/utils/formatDate';
 
 type RemoveTarget = { cell: ScheduleCell; user: WorkScheduleUser };
@@ -51,7 +51,7 @@ export default function PageClient() {
     <div className='mx-auto grid w-full max-w-[150rem] grid-cols-[minmax(0,1fr)_30rem] items-start gap-[2.4rem] p-[3.4rem]'>
       <section className='bg-black-1 flex flex-col gap-[2.4rem] rounded-[1.2rem] border border-gray-50 p-[2.4rem]'>
         <div className='flex items-center justify-between gap-[1.6rem]'>
-          <WeekNavigator
+          <WeekRangeNavigator
             weekStartKey={weekStartKey}
             onMove={(delta) => setWeekStartKey((prev) => shiftWeek(prev, delta))}
           />

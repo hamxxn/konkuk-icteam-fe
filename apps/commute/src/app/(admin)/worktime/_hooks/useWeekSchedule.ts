@@ -6,7 +6,7 @@ import {
   getWorkSchedules,
   type WorkScheduleUser,
 } from '../../_apis/workSchedules';
-import { getWeekDays, type WeekDay } from '../_utils/week';
+import { getWeekDays, type WeekDay } from '../_utils/weekKey';
 
 // 칸에 넣을 사람. 배치 id는 넣은 뒤에 서버가 정한다
 export type ScheduleCellWorker = Pick<WorkScheduleUser, 'userId' | 'userName'>;

@@ -1,5 +1,6 @@
 import { parseISO, toISO } from '@konkuk-icteam-fe/design-system/date';
 import { formatDateRange, formatMonthDay } from '@/shared/utils/formatDate';
+import { addDays, DAYS_PER_WEEK, getMondayOfWeek } from '@/shared/utils/week';
 
 const WEEKDAY_LABELS = ['일', '월', '화', '수', '목', '금', '토'] as const;
 const WORKDAY_COUNT = 5;
@@ -17,13 +18,7 @@ export type WeekDay = {
  * @returns 그 주 월요일 (YYYY-MM-DD)
  * @example getWeekStartKey(new Date(2026, 9, 24)); // '2026-10-19'
  */
-export const getWeekStartKey = (date: Date) => {
-  const monday = new Date(date);
-  const offset = (date.getDay() + 6) % 7;
-  monday.setDate(date.getDate() - offset);
-
-  return toISO(monday);
-};
+export const getWeekStartKey = (date: Date) => toISO(getMondayOfWeek(date));
 
 /**
  * 주를 앞뒤로 옮깁니다.
@@ -32,12 +27,8 @@ export const getWeekStartKey = (date: Date) => {
  * @returns 옮긴 주의 월요일 (YYYY-MM-DD)
  * @example shiftWeek('2026-10-19', 1); // '2026-10-26'
  */
-export const shiftWeek = (weekStartKey: string, delta: number) => {
-  const date = parseISO(weekStartKey);
-  date.setDate(date.getDate() + delta * 7);
-
-  return toISO(date);
-};
+export const shiftWeek = (weekStartKey: string, delta: number) =>
+  toISO(addDays(parseISO(weekStartKey), delta * DAYS_PER_WEEK));
 
 /**
  * 주의 평일(월~금) 목록을 만듭니다.
@@ -47,8 +38,7 @@ export const shiftWeek = (weekStartKey: string, delta: number) => {
  */
 export const getWeekDays = (weekStartKey: string): WeekDay[] =>
   Array.from({ length: WORKDAY_COUNT }, (_, index) => {
-    const date = parseISO(weekStartKey);
-    date.setDate(date.getDate() + index);
+    const date = addDays(parseISO(weekStartKey), index);
 
     return {
       dateKey: toISO(date),
