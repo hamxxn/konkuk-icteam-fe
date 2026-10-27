@@ -18,10 +18,10 @@ export type ScheduleCell = {
   users: WorkScheduleUser[];
 };
 
-// 시간표 한 열 (하루). 요일·날짜 글자와 한 시간 단위 칸
+// 시간표 한 열 (하루). 요일·날짜 글자와 30분 단위 칸
 export type ScheduleDay = WeekDay & { cells: ScheduleCell[] };
 
-// 한 주(월~금)의 한 시간 단위 근무 칸. 사람을 넣고 빼면 바로 저장하고 다시 불러온다
+// 한 주(월~금)의 30분 단위 근무 칸. 사람을 넣고 빼면 바로 저장하고 다시 불러온다
 export const useWeekSchedule = (weekStartKey: string) => {
   const [, refresh] = useReducer((count: number) => count + 1, 0);
 

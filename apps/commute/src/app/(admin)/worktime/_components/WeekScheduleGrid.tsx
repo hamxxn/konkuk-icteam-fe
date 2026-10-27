@@ -12,7 +12,7 @@ type WeekScheduleGridProps = {
   focusedUserId?: number | null;
 };
 
-// 월~금 x 한 시간 단위 근무 시간표. 칸이 최대 인원에 닿으면 빨간 테두리로 알린다
+// 월~금 x 30분 단위 근무 시간표. 칸이 최대 인원에 닿으면 빨간 테두리로 알린다
 export default function WeekScheduleGrid({
   days,
   maxConcurrentWorkers,

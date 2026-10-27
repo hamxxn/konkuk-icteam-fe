@@ -15,7 +15,7 @@ export type WorkScheduleUser = {
   userName: string;
 };
 
-// 한 시간 단위 근무 칸 (예: 09:00~10:00). 아무도 없는 칸도 users가 빈 배열로 온다
+// 30분 단위 근무 칸 (예: 09:00~09:30). 아무도 없는 칸도 users가 빈 배열로 온다
 export type WorkScheduleSlot = {
   start: TimeString;
   end: TimeString;
@@ -24,7 +24,7 @@ export type WorkScheduleSlot = {
 
 export type WorkScheduleDay = {
   date: Date;
-  // 09:00부터 18:00까지 9칸
+  // 09:00부터 18:00까지 18칸. 점심시간(11:30~13:00) 칸도 온다
   slots: WorkScheduleSlot[];
 };
 
@@ -84,7 +84,7 @@ export const getWorkSchedules = ({
 
 export type GetMyWorkSchedulesRequest = GetWorkSchedulesRequest;
 
-// 내가 배치된 한 시간 칸. scheduleId는 출근할 때 보낸다
+// 내가 배치된 30분 칸. scheduleId는 출근할 때 보낸다
 export type MyWorkScheduleSlot = {
   scheduleId: number;
   start: TimeString;

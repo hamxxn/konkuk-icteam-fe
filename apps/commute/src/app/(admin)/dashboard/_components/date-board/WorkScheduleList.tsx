@@ -11,7 +11,7 @@ type ScheduleRowProps = {
   slot: WorkScheduleSlot;
 };
 
-// 한 시간 칸 한 줄. 시각, 근무하는 사람, 인원 수를 보여 준다
+// 30분 칸 한 줄. 시각, 근무하는 사람, 인원 수를 보여 준다
 const ScheduleRow = ({ slot }: ScheduleRowProps) => (
   <div className='grid grid-cols-[4rem_1fr_3.2rem] items-start gap-[1.2rem] border-b border-gray-50 px-[0.8rem] py-[0.8rem] last:border-b-0'>
     <time className='font-16-md text-black'>{slot.start}</time>
@@ -26,7 +26,7 @@ const ScheduleRow = ({ slot }: ScheduleRowProps) => (
   </div>
 );
 
-// 하루치 근무 시간표 목록. 한 시간 단위로 누가 근무하는지 오전·오후로 나눠 보여 준다. 아무도 없는 칸은 뺀다
+// 하루치 근무 시간표 목록. 30분 단위로 누가 근무하는지 오전·오후로 나눠 보여 준다. 아무도 없는 칸은 뺀다
 export default function WorkScheduleList({ slots }: WorkScheduleListProps) {
   const groups = PERIODS.map(({ label, checkHour }) => ({
     label,

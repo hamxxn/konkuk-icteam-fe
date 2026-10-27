@@ -16,7 +16,7 @@ export type WorkApplicationSettings = {
   // 근무 시간을 신청할 수 있는 기간 (보통 전달). 날짜와 시각까지 정해져 있다
   applyStartDate: Date;
   applyEndDate: Date;
-  // 한 시간에 함께 근무할 수 있는 최대 인원
+  // 한 칸(30분)에 함께 근무할 수 있는 최대 인원
   maxConcurrentWorkers: number;
   weeklyMinHours: number;
   weeklyMaxHours: number;
@@ -47,7 +47,7 @@ export type GetMyWorkApplicationRequest = GetWorkApplicationSettingsRequest;
 export type GetMyWorkApplicationResponse = {
   year: number;
   month: number;
-  // 내가 신청한 근무. 한 시간 칸이 이어지면 한 구간으로 온다
+  // 내가 신청한 근무. 30분 칸이 이어지면 한 구간으로 온다
   schedules: WorkTimeRange[];
 };
 

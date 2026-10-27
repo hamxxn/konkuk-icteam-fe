@@ -7,7 +7,7 @@ import { formatNumber, parseISO, toISO } from '@konkuk-icteam-fe/design-system/d
  * - 요청·응답 타입의 날짜는 Date다. JSON으로 주고받을 때는 아래 문자열로 보낸다
  *   - 날짜만: 'YYYY-MM-DD' (예: '2026-10-25')
  *   - 날짜와 시각: 'YYYY-MM-DDTHH:mm:ss' (한국 시간, 시간대 표기 없음)
- * - 날짜 없이 시각만 있는 값은 'HH:mm' 문자열이다 (예: '09:00'). 근무 칸은 한 시간 단위다
+ * - 날짜 없이 시각만 있는 값은 'HH:mm' 문자열이다 (예: '09:00'). 근무 칸은 30분 단위다
  * - 아직 서버가 없어서 함수는 mock 폴더의 JSON(서버가 보낼 모양 그대로)을 Date로 바꿔 돌려준다.
  *   서버를 붙이면 함수 안만 실제 요청으로 바꾸고, 그때 반환값이 Promise가 된다
  */
@@ -15,7 +15,7 @@ import { formatNumber, parseISO, toISO } from '@konkuk-icteam-fe/design-system/d
 // 'HH:mm'
 export type TimeString = string;
 
-// 하루 안의 근무 구간. 한 시간 칸이 이어지면 한 구간으로 묶는다 (예: 2026-10-27 09:00 ~ 12:00)
+// 하루 안의 근무 구간. 30분 칸이 이어지면 한 구간으로 묶는다 (예: 2026-10-27 09:00 ~ 12:00)
 export type WorkTimeRange = {
   date: Date;
   start: TimeString;

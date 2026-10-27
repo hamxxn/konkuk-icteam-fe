@@ -13,7 +13,7 @@ export type WorkApplicationSettings = {
   // JSON으로는 'YYYY-MM-DDTHH:mm:ss'로 주고받는다
   applyStartDate: Date;
   applyEndDate: Date;
-  // 한 시간에 함께 근무할 수 있는 최대 인원
+  // 한 칸(30분)에 함께 근무할 수 있는 최대 인원
   maxConcurrentWorkers: number;
   weeklyMinHours: number;
   weeklyMaxHours: number;

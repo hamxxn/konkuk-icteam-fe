@@ -5,7 +5,7 @@ import type { TodoPeriod } from './todos';
 // 근무 상태 코드. WK01 예정 · WK02 근무중 · WK03 근무 완료 · WK04 결근
 export type WorkStatusCode = 'WK01' | 'WK02' | 'WK03' | 'WK04';
 
-// 하루 근무 한 건. 내가 배치된 한 시간 칸을 오전·오후로 나눠 이어진 구간으로 묶은 것
+// 하루 근무 한 건. 내가 배치된 30분 칸을 오전·오후로 나눠 이어진 구간으로 묶은 것
 export type WorkShift = {
   // 이 근무에 묶인 칸 배치 id (관리자 시간표의 scheduleId). 출근할 때 보낸다
   scheduleIds: number[];

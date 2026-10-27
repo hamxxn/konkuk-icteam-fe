@@ -41,7 +41,7 @@ export default function SlotCell({ cell }: SlotCellProps) {
     >
       <button
         className={cn(
-          'flex h-[3.6rem] w-full items-center justify-center rounded-[0.4rem]',
+          'flex h-[2.8rem] w-full items-center justify-center rounded-[0.4rem]',
           SLOT_STATUS_CLASS_NAME[cell.status],
           // 막힌 버튼은 마우스 이벤트를 받지 않아서, 명단이 있는 칸은 감싸는 칸이 커서를 읽게 통과시킨다
           hasWorkers && 'pointer-events-none',

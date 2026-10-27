@@ -14,7 +14,7 @@ export type WorkScheduleUser = {
   userName: string;
 };
 
-// 한 시간 단위 근무 칸 (예: 09:00~10:00). 아무도 없는 칸도 users가 빈 배열로 온다
+// 30분 단위 근무 칸 (예: 09:00~09:30). 아무도 없는 칸도 users가 빈 배열로 온다
 export type WorkScheduleSlot = {
   start: TimeString;
   end: TimeString;
@@ -23,7 +23,7 @@ export type WorkScheduleSlot = {
 
 export type WorkScheduleDay = {
   date: Date;
-  // 09:00부터 18:00까지 9칸
+  // 09:00부터 18:00까지 18칸. 점심시간(11:30~13:00) 칸도 온다
   slots: WorkScheduleSlot[];
 };
 
@@ -62,7 +62,7 @@ export type DeleteWorkScheduleRequest = {
 
 /**
  * GET /admin/work-schedules?startDate=&endDate=
- * 기간 안의 날마다 한 시간 단위 근무 칸과 배치된 사람. 대시보드는 하루, 근로시간 관리는 월~금을 조회한다
+ * 기간 안의 날마다 30분 단위 근무 칸과 배치된 사람. 대시보드는 하루, 근로시간 관리는 월~금을 조회한다
  */
 export const getWorkSchedules = ({
   startDate,

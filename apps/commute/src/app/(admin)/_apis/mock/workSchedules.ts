@@ -1,5 +1,6 @@
-import { formatNumber, parseISO } from '@konkuk-icteam-fe/design-system/date';
+import { parseISO } from '@konkuk-icteam-fe/design-system/date';
 import type { ApiJson } from '@/shared/apis/common';
+import { checkLunchSlot, SLOT_TIMES } from '@/shared/config/slot';
 import type { MonthlyWorkRecord } from '../workers';
 import type { CreateWorkScheduleResponse, WorkScheduleSlot } from '../workSchedules';
 import { getMonthlyUserIdsMock, getWorkApplicationMock } from './workApplications';
@@ -27,10 +28,9 @@ const DELETED_SCHEDULE_IDS = new Set<number>();
 const createSeed = (...values: number[]) =>
   values.reduce((seed, value) => (seed * 31 + value) % 9973, 7);
 
-const toTime = (hour: number) => `${formatNumber(hour)}:00`;
-
 /**
  * 한 사람의 그날 근무 시간을 얻습니다. 주말은 쉬고, 평일에도 사람마다 쉬는 요일이 하루씩 있습니다.
+ * 근무 구간이 점심시간에 걸려도 점심시간 칸에는 넣지 않습니다.
  * @param userId 근로학생 id
  * @param date 날짜
  * @returns 시작 시와 근무 시간 수. 쉬는 날이면 null
@@ -54,16 +54,19 @@ const getDailyShift = (userId: number, date: Date): DailyShift | null => {
  * @param start 칸 시작 시각 (HH:mm)
  * @param userId 근로학생 id
  * @returns 배치 id
- * @example createScheduleId('2026-10-22', '09:00', 1); // 2026102209001
+ * @example createScheduleId('2026-10-22', '09:30', 1); // 202610220930001
  */
 const createScheduleId = (dateKey: string, start: string, userId: number) =>
-  Number(`${dateKey.replaceAll('-', '')}${start.slice(0, 2)}${String(userId).padStart(3, '0')}`);
+  Number(
+    `${dateKey.replaceAll('-', '')}${start.replace(':', '')}${String(userId).padStart(3, '0')}`,
+  );
 
 /**
- * 하루치 근무 칸 목업을 만듭니다. 9시부터 18시까지 한 시간 단위로, 그 시간에 근무하는 그 달 근로학생을 담습니다.
+ * 하루치 근무 칸 목업을 만듭니다. 9시부터 18시까지 30분 단위로, 그 시간에 근무하는 그 달 근로학생을 담습니다.
+ * 점심시간 칸에는 근무자를 넣지 않습니다.
  * @param dateKey 날짜 (YYYY-MM-DD)
- * @returns 한 시간 단위 근무 칸 목록 (근무자가 없는 칸도 포함)
- * @example getDaySlotsMock('2026-10-23')[0]; // { start: '09:00', end: '10:00', users: [...] }
+ * @returns 30분 단위 근무 칸 목록 (근무자가 없는 칸도 포함)
+ * @example getDaySlotsMock('2026-10-23')[0]; // { start: '09:00', end: '09:30', users: [...] }
  */
 export const getDaySlotsMock = (dateKey: string): WorkScheduleSlot[] => {
   const date = parseISO(dateKey);
@@ -72,25 +75,26 @@ export const getDaySlotsMock = (dateKey: string): WorkScheduleSlot[] => {
     ({ userId, name }) => ({ userId, userName: name, shift: getDailyShift(userId, date) }),
   );
 
-  return Array.from({ length: LAST_WORK_HOUR - FIRST_WORK_HOUR }, (_, index) => {
-    const hour = FIRST_WORK_HOUR + index;
-    const start = toTime(hour);
-    const baseUsers = shifts
-      .filter(
-        ({ shift }) => shift && shift.startHour <= hour && hour < shift.startHour + shift.hours,
-      )
-      .map(({ userId, userName }) => ({
-        scheduleId: createScheduleId(dateKey, start, userId),
-        userId,
-        userName,
-      }));
+  return SLOT_TIMES.map(({ start, end }) => {
+    const hour = Number(start.slice(0, 2));
+    const baseUsers = checkLunchSlot(start)
+      ? []
+      : shifts
+          .filter(
+            ({ shift }) => shift && shift.startHour <= hour && hour < shift.startHour + shift.hours,
+          )
+          .map(({ userId, userName }) => ({
+            scheduleId: createScheduleId(dateKey, start, userId),
+            userId,
+            userName,
+          }));
     const addedUsers = ADDED_SCHEDULES.filter(
       (schedule) => schedule.date === dateKey && schedule.start === start,
     ).map(({ scheduleId, userId, userName }) => ({ scheduleId, userId, userName }));
 
     return {
       start,
-      end: toTime(hour + 1),
+      end,
       users: [...baseUsers, ...addedUsers].filter(
         ({ scheduleId }) => !DELETED_SCHEDULE_IDS.has(scheduleId),
       ),

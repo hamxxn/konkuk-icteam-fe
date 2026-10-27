@@ -118,7 +118,7 @@ export const getWeekdayDates = (monday: Date) =>
 export const createSlotKey = (dateKey: string, startTime: string) => `${dateKey} ${startTime}`;
 
 /**
- * 한 시간 칸들을 날짜별로 이어진 구간으로 묶습니다. 요청·신청을 보낼 때 씁니다.
+ * 칸들을 날짜별로 이어진 구간으로 묶습니다. 요청·신청을 보낼 때 씁니다.
  * @param slots 칸 목록
  * @param slots[].date 날짜 'YYYY-MM-DD'
  * @param slots[].startTime 칸 시작 시각 'HH:MM'
