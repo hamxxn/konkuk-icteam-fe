@@ -12,7 +12,7 @@ type WeekScheduleGridProps = {
   focusedUserId?: number | null;
 };
 
-// 월~금 x 30분 단위 근무 시간표. 칸이 최대 인원에 닿으면 빨간 테두리로 알린다
+// 월~금 x 30분 단위 근무 시간표. 칸이 최대 인원에 닿으면 빨간 테두리로 알리고, 점심시간 칸은 막아 둔다
 export default function WeekScheduleGrid({
   days,
   maxConcurrentWorkers,
@@ -37,6 +37,18 @@ export default function WeekScheduleGrid({
           {days.map(({ dateKey, cells }, columnIndex) => {
             const cell = cells[timeIndex];
             if (!cell) return <div key={`${dateKey}-${time}`} />;
+
+            // 점심시간 칸은 인원 수도 편집 버튼도 없이 막아 둔다
+            if (cell.isLunch) {
+              return (
+                <div
+                  key={`${dateKey}-${time}`}
+                  className='caption-12-md flex min-h-[8.4rem] items-center justify-center rounded-[1.2rem] bg-gray-50 text-gray-400'
+                >
+                  점심시간
+                </div>
+              );
+            }
 
             const isFull = cell.users.length >= maxConcurrentWorkers;
             const isDimmed =

@@ -6,6 +6,7 @@ import {
   getWorkSchedules,
   type WorkScheduleUser,
 } from '../../_apis/workSchedules';
+import { checkLunchSlot } from '@/shared/utils/slot';
 import { getWeekDays, type WeekDay } from '../_utils/weekKey';
 
 // 칸에 넣을 사람. 배치 id는 넣은 뒤에 서버가 정한다
@@ -16,6 +17,8 @@ export type ScheduleCell = {
   start: string;
   end: string;
   users: WorkScheduleUser[];
+  // 점심시간 칸. 아무도 넣을 수 없다
+  isLunch: boolean;
 };
 
 // 시간표 한 열 (하루). 요일·날짜 글자와 30분 단위 칸
@@ -37,12 +40,13 @@ export const useWeekSchedule = (weekStartKey: string) => {
       start,
       end,
       users,
+      isLunch: checkLunchSlot(start),
     })),
   }));
 
-  // 칸에 사람을 넣는다. 이미 그 칸에 있으면 넣지 않고 false를 돌려준다
+  // 칸에 사람을 넣는다. 점심시간 칸이거나 이미 그 칸에 있으면 넣지 않고 false를 돌려준다
   const handleUserAdd = (cell: ScheduleCell, { userId }: ScheduleCellWorker) => {
-    if (cell.users.some((user) => user.userId === userId)) return false;
+    if (cell.isLunch || cell.users.some((user) => user.userId === userId)) return false;
 
     createWorkSchedule({ userId, date: parseISO(cell.dateKey), start: cell.start, end: cell.end });
     refresh();

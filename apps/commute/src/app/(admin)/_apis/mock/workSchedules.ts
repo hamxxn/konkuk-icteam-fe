@@ -1,6 +1,7 @@
 import { parseISO } from '@konkuk-icteam-fe/design-system/date';
 import type { ApiJson } from '@/shared/apis/common';
-import { SLOT_TIMES } from '@/shared/config/slot';
+import { LUNCH_BREAK, SLOT_MINUTES, SLOT_TIMES } from '@/shared/config/slot';
+import { MIN_WORK_HOURS_PER_SHIFT } from '@/shared/config/workHours';
 import { checkWeekend } from '@/shared/utils/calendar';
 import { checkLunchSlot } from '@/shared/utils/slot';
 import type { MonthlyWorkRecord } from '../workers';
@@ -10,12 +11,14 @@ import { WORKERS_MOCK } from './workers';
 
 // 근무 시간표·근무 기록 목업. 날짜와 사람만으로 값이 정해져서 화면마다 숫자가 어긋나지 않는다
 
-const FIRST_WORK_HOUR = 9;
-const LAST_WORK_HOUR = 18;
 const MONTHLY_LIMIT_MINUTES = 60 * 60;
 const DEFAULT_MAX_CONCURRENT_WORKERS = 4;
 
-type DailyShift = { startHour: number; hours: number };
+// 이어진 근무 한 구간의 최소 칸 수 (1시간 = 30분 칸 2개)
+const MIN_SLOTS_PER_SHIFT = (MIN_WORK_HOURS_PER_SHIFT * 60) / SLOT_MINUTES;
+// 하루 근무 길이는 점심시간을 포함해 6~8칸 (3시간 ~ 4시간, 30분 단위)
+const MIN_DAILY_SLOT_COUNT = 6;
+const DAILY_SLOT_COUNT_VARIANTS = 3;
 
 // 관리자가 넣은 배치와 뺀 배치. 새로 고침하면 처음으로 돌아간다
 const ADDED_SCHEDULES: ApiJson<CreateWorkScheduleResponse>[] = [];
@@ -31,23 +34,56 @@ const createSeed = (...values: number[]) =>
   values.reduce((seed, value) => (seed * 31 + value) % 9973, 7);
 
 /**
- * 한 사람의 그날 근무 시간을 얻습니다. 주말은 쉬고, 평일에도 사람마다 쉬는 요일이 하루씩 있습니다.
- * 근무 구간이 점심시간에 걸려도 점심시간 칸에는 넣지 않습니다.
+ * 시작 칸부터 몇 칸 동안의 근무 칸 시작 시각을 만듭니다. 점심시간 칸은 뺍니다.
+ * @param startIndex 하루 칸(SLOT_TIMES) 중 시작 칸의 순서
+ * @param slotCount 점심시간을 포함한 칸 수
+ * @returns 근무 칸 시작 시각 목록 (HH:mm)
+ * @example createShiftStartTimes(4, 6); // ['11:00', '13:00', '13:30', '14:00'] (11:30~13:00은 점심)
+ */
+const createShiftStartTimes = (startIndex: number, slotCount: number) =>
+  SLOT_TIMES.slice(startIndex, startIndex + slotCount)
+    .map(({ start }) => start)
+    .filter((start) => !checkLunchSlot(start));
+
+/**
+ * 점심시간으로 끊긴 앞뒤 근무가 모두 최소 근무 시간 이상인지 확인합니다. 30분만 근무하는 구간은 안 됩니다.
+ * @param startTimes 하루 근무 칸 시작 시각 목록 (HH:mm, 점심 칸 제외)
+ * @returns 점심 앞·뒤 구간이 각각 없거나 최소 칸 수 이상이면 true
+ * @example checkShiftLongEnough(['11:00', '13:00', '13:30']); // false (11:00~11:30만 근무)
+ */
+const checkShiftLongEnough = (startTimes: string[]) => {
+  const beforeLunchCount = startTimes.filter((start) => start < LUNCH_BREAK.start).length;
+  const afterLunchCount = startTimes.filter((start) => start >= LUNCH_BREAK.end).length;
+
+  return (
+    beforeLunchCount + afterLunchCount > 0 &&
+    [beforeLunchCount, afterLunchCount].every(
+      (count) => count === 0 || count >= MIN_SLOTS_PER_SHIFT,
+    )
+  );
+};
+
+/**
+ * 한 사람의 그날 근무 칸을 얻습니다. 주말은 쉬고, 평일에도 사람마다 쉬는 요일이 하루씩 있습니다.
+ * 근무는 30분 단위로 시작하고 끝나며, 점심시간 칸에는 넣지 않습니다. 점심으로 끊긴 구간도 최소 근무 시간 이상입니다.
  * @param userId 근로학생 id
  * @param date 날짜
- * @returns 시작 시와 근무 시간 수. 쉬는 날이면 null
- * @example getDailyShift(1, new Date(2026, 9, 23)); // { startHour: 14, hours: 3 }
+ * @returns 근무 칸 시작 시각 목록 (HH:mm). 쉬는 날이면 빈 배열
+ * @example getDailyShiftStartTimes(1, new Date(2026, 9, 23)); // ['14:00', '14:30', ..., '16:30']
  */
-const getDailyShift = (userId: number, date: Date): DailyShift | null => {
-  if (checkWeekend(date)) return null;
+const getDailyShiftStartTimes = (userId: number, date: Date) => {
+  if (checkWeekend(date)) return [];
 
   const seed = createSeed(userId - 1, date.getDay());
-  if (seed % 5 === 0) return null;
+  if (seed % 5 === 0) return [];
 
-  const hours = 3 + (seed % 2);
-  const startHour = FIRST_WORK_HOUR + (seed % (LAST_WORK_HOUR - FIRST_WORK_HOUR - hours + 1));
+  const slotCount = MIN_DAILY_SLOT_COUNT + (seed % DAILY_SLOT_COUNT_VARIANTS);
+  const shiftCandidates = Array.from(
+    { length: SLOT_TIMES.length - slotCount + 1 },
+    (_, startIndex) => createShiftStartTimes(startIndex, slotCount),
+  ).filter(checkShiftLongEnough);
 
-  return { startHour, hours };
+  return shiftCandidates[seed % shiftCandidates.length] ?? [];
 };
 
 /**
@@ -74,22 +110,21 @@ export const getDaySlotsMock = (dateKey: string): WorkScheduleSlot[] => {
   const date = parseISO(dateKey);
   const roster = getMonthlyUserIdsMock(date.getFullYear(), date.getMonth() + 1);
   const shifts = WORKERS_MOCK.filter(({ userId }) => roster.includes(userId)).map(
-    ({ userId, name }) => ({ userId, userName: name, shift: getDailyShift(userId, date) }),
+    ({ userId, name }) => ({
+      userId,
+      userName: name,
+      startTimes: getDailyShiftStartTimes(userId, date),
+    }),
   );
 
   return SLOT_TIMES.map(({ start, end }) => {
-    const hour = Number(start.slice(0, 2));
-    const baseUsers = checkLunchSlot(start)
-      ? []
-      : shifts
-          .filter(
-            ({ shift }) => shift && shift.startHour <= hour && hour < shift.startHour + shift.hours,
-          )
-          .map(({ userId, userName }) => ({
-            scheduleId: createScheduleId(dateKey, start, userId),
-            userId,
-            userName,
-          }));
+    const baseUsers = shifts
+      .filter(({ startTimes }) => startTimes.includes(start))
+      .map(({ userId, userName }) => ({
+        scheduleId: createScheduleId(dateKey, start, userId),
+        userId,
+        userName,
+      }));
     const addedUsers = ADDED_SCHEDULES.filter(
       (schedule) => schedule.date === dateKey && schedule.start === start,
     ).map(({ scheduleId, userId, userName }) => ({ scheduleId, userId, userName }));
@@ -114,6 +149,8 @@ export const createWorkScheduleMock = ({
   start,
   end,
 }: Pick<ApiJson<CreateWorkScheduleResponse>, 'userId' | 'date' | 'start' | 'end'>) => {
+  if (checkLunchSlot(start)) throw new Error('점심시간 칸에는 근무를 넣을 수 없습니다.');
+
   const userName = WORKERS_MOCK.find((worker) => worker.userId === userId)?.name ?? '';
   const scheduleId = createScheduleId(date, start, userId);
   const schedule = { scheduleId, userId, userName, date, start, end };
