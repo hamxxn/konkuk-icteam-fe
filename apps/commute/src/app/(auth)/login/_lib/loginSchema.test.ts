@@ -21,6 +21,15 @@ describe('loginSchema', () => {
     expect(result.success).toBe(true);
   });
 
+  it('대문자가 섞인 학교 메일도 받고, 앞뒤 공백을 뺀 소문자로 바꾼다', () => {
+    const result = loginSchema.safeParse({
+      email: ' GilDong@KONKUK.ac.kr ',
+      password: 'password1234',
+    });
+
+    expect(result.data?.email).toBe('gildong@konkuk.ac.kr');
+  });
+
   it('학교 메일이 아니면 학교 메일만 쓸 수 있다고 안내한다', () => {
     ['gildong@gmail.com', 'gildong@konkuk.ac.kr.com', 'gildong', '@konkuk.ac.kr'].forEach(
       (email) => {
