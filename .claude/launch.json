@@ -4,8 +4,27 @@
     {
       "name": "design-system-storybook",
       "runtimeExecutable": "pnpm",
-      "runtimeArgs": ["--filter", "@konkuk-icteam-fe/design-system", "run", "storybook"],
+      "runtimeArgs": [
+        "--filter",
+        "@konkuk-icteam-fe/design-system",
+        "run",
+        "storybook"
+      ],
       "port": 6006
+    },
+    {
+      "name": "commute",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": [
+        "--filter",
+        "commute",
+        "exec",
+        "next",
+        "dev",
+        "--port",
+        "3000"
+      ],
+      "port": 3000
     }
   ]
 }
