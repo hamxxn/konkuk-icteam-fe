@@ -1,4 +1,4 @@
-import { formatNumber, toISO } from '@konkuk-icteam-fe/design-system/date';
+import { toISO } from '@konkuk-icteam-fe/design-system/date';
 import { getMe } from '@/shared/apis/me';
 import {
   getMyWorkApplication,
@@ -7,18 +7,14 @@ import {
 } from '@/shared/apis/workApplications';
 import { getWorkSchedules } from '@/shared/apis/workSchedules';
 import type { TimeTableSource } from '@/shared/components/timetable/types';
-import {
-  addDays,
-  createSlotKey,
-  convertTimeToMinutes,
-  getFirstWeekMonday,
-} from '@/shared/components/timetable/utils';
+import { createSlotKey } from '@/shared/components/timetable/utils';
 import { PUBLIC_HOLIDAYS } from '@/shared/config/holidays';
 import { SLOT_MINUTES } from '@/shared/config/slot';
+import { convertMinutesToTime, convertTimeToMinutes } from '@/shared/utils/time';
+import { addDays, DAYS_PER_WEEK, getFirstWeekMonday } from '@/shared/utils/week';
 
 // 한 달의 주차는 많아야 6주라, 1주차 월요일부터 6주를 보면 그 달 표를 모두 덮는다
 const MAX_WEEKS_PER_MONTH = 6;
-const DAYS_PER_WEEK = 7;
 
 /**
  * 근무할 수 없는 날을 모읍니다. 공휴일과 관리자가 그 달 막아 둔 날입니다.
@@ -102,10 +98,7 @@ export const createApplySource = ({
     return Array.from({ length: slotCount }, (_, index) => {
       const startMinutes = convertTimeToMinutes(start) + index * SLOT_MINUTES;
 
-      return createSlotKey(
-        toISO(date),
-        `${formatNumber(Math.floor(startMinutes / 60))}:${formatNumber(startMinutes % 60)}`,
-      );
+      return createSlotKey(toISO(date), convertMinutesToTime(startMinutes));
     });
   });
 

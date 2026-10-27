@@ -9,7 +9,7 @@ import { getWorkApplicationSettings } from '@/shared/apis/workApplications';
 import TimeTable from '@/shared/components/timetable/base/Week';
 import { useTimeTable } from '@/shared/components/timetable/hooks/useTimeTable';
 import { useTimeTableWeek } from '@/shared/components/timetable/hooks/useTimeTableWeek';
-import { getMonthWeekInfo } from '@/shared/components/timetable/utils';
+import { getMonthWeekInfo } from '@/shared/utils/week';
 import { ROUTES } from '@/shared/config/routes';
 
 import WeekNavigator from './_components/WeekNavigator';

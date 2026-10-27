@@ -1,5 +1,5 @@
 import { toISO } from '@konkuk-icteam-fe/design-system/date';
-import { getMonthDates } from '@/shared/lib/calendar';
+import { getMonthDates } from '@/shared/utils/calendar';
 import type { ApiJson } from '../common';
 import type { TodoPeriod } from '../todos';
 import type { WorkShift, WorkStatusCode } from '../workShifts';

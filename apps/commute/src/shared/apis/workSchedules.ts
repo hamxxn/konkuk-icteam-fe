@@ -1,4 +1,4 @@
-import { addDays } from '@/shared/components/timetable/utils';
+import { addDays } from '@/shared/utils/week';
 import { parseApiDate, toApiDate, type TimeString } from './common';
 import {
   getMyDaySlotsMock,

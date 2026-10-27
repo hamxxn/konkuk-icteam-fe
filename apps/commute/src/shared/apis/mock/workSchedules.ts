@@ -3,7 +3,8 @@ import {
   getDaySlotsMock,
   getMaxConcurrentWorkersMock,
 } from '@/app/(admin)/_apis/mock/workSchedules';
-import { checkLunchSlot } from '@/shared/config/slot';
+import { checkWeekend } from '@/shared/utils/calendar';
+import { checkLunchSlot } from '@/shared/utils/slot';
 import type { ApiJson } from '../common';
 import type { WorkScheduleSlot } from '../workSchedules';
 import { getMyNameMock, MY_USER_ID } from './me';
@@ -22,8 +23,7 @@ export const DEMO_MORNING_SLOT_STARTS = ['09:00', '09:30', '10:00', '10:30'];
  * @example checkDemoSlot('2026-10-27', '09:00', new Date(2026, 9, 27, 8, 30)); // true
  */
 const checkDemoSlot = (dateKey: string, start: string, now: Date) => {
-  const isWeekday = now.getDay() !== 0 && now.getDay() !== 6;
-  if (!isWeekday || dateKey !== toISO(now) || checkLunchSlot(start)) return false;
+  if (checkWeekend(now) || dateKey !== toISO(now) || checkLunchSlot(start)) return false;
 
   return DEMO_MORNING_SLOT_STARTS.includes(start) || Number(start.slice(0, 2)) === now.getHours();
 };

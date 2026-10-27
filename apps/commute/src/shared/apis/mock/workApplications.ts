@@ -1,6 +1,6 @@
 import { formatNumber, parseISO, toISO } from '@konkuk-icteam-fe/design-system/date';
 import { getWorkApplicationMock } from '@/app/(admin)/_apis/mock/workApplications';
-import { getMonthDates } from '@/shared/lib/calendar';
+import { getMonthDates } from '@/shared/utils/calendar';
 import type { ApiJson, WorkTimeRange } from '../common';
 import type { WorkApplicationSettings } from '../workApplications';
 import { MY_USER_ID } from './me';

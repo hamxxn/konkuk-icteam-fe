@@ -1,6 +1,8 @@
 import { parseISO } from '@konkuk-icteam-fe/design-system/date';
 import type { ApiJson } from '@/shared/apis/common';
-import { checkLunchSlot, SLOT_TIMES } from '@/shared/config/slot';
+import { SLOT_TIMES } from '@/shared/config/slot';
+import { checkWeekend } from '@/shared/utils/calendar';
+import { checkLunchSlot } from '@/shared/utils/slot';
 import type { MonthlyWorkRecord } from '../workers';
 import type { CreateWorkScheduleResponse, WorkScheduleSlot } from '../workSchedules';
 import { getMonthlyUserIdsMock, getWorkApplicationMock } from './workApplications';
@@ -37,7 +39,7 @@ const createSeed = (...values: number[]) =>
  * @example getDailyShift(1, new Date(2026, 9, 23)); // { startHour: 14, hours: 3 }
  */
 const getDailyShift = (userId: number, date: Date): DailyShift | null => {
-  if (date.getDay() === 0 || date.getDay() === 6) return null;
+  if (checkWeekend(date)) return null;
 
   const seed = createSeed(userId - 1, date.getDay());
   if (seed % 5 === 0) return null;

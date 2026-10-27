@@ -1,6 +1,6 @@
 import { parseISO, toISO } from '@konkuk-icteam-fe/design-system/date';
 import { getMonthlyRecordMock } from '@/app/(admin)/_apis/mock/workSchedules';
-import { addDays, getMondayOfWeek } from '@/shared/components/timetable/utils';
+import { addDays, getMondayOfWeek } from '@/shared/utils/week';
 import { SLOT_MINUTES } from '@/shared/config/slot';
 import { MY_USER_ID } from './me';
 import { getMyDaySlotsMock } from './workSchedules';

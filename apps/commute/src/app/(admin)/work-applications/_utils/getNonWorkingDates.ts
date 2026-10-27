@@ -1,5 +1,5 @@
-import { toISO } from '@konkuk-icteam-fe/design-system/date';
-import { PUBLIC_HOLIDAYS } from '@/shared/config/holidays';
+import { parseISO } from '@konkuk-icteam-fe/design-system/date';
+import { checkHoliday, checkWeekend, getMonthDates } from '@/shared/utils/calendar';
 import { parseMonthKey } from '../../_utils/monthKey';
 
 /**
@@ -10,12 +10,8 @@ import { parseMonthKey } from '../../_utils/monthKey';
  */
 export const getNonWorkingDates = (monthKey: string) => {
   const { year, month } = parseMonthKey(monthKey);
-  const dayCount = new Date(year, month, 0).getDate();
 
-  return Array.from({ length: dayCount }, (_, index) => new Date(year, month - 1, index + 1))
-    .filter((date) => {
-      const isWeekend = date.getDay() === 0 || date.getDay() === 6;
-      return isWeekend || PUBLIC_HOLIDAYS.some((holiday) => holiday === toISO(date));
-    })
-    .map(toISO);
+  return getMonthDates(new Date(year, month - 1, 1)).filter(
+    (dateKey) => checkWeekend(parseISO(dateKey)) || checkHoliday(dateKey),
+  );
 };

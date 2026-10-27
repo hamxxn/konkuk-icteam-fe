@@ -1,8 +1,12 @@
 import { useState } from 'react';
 
-import { addDays, getMondayOfWeek, getMonthWeekInfo, getWeekdayDates } from '../utils';
-
-const DAYS_PER_WEEK = 7;
+import {
+  addDays,
+  DAYS_PER_WEEK,
+  getMondayOfWeek,
+  getMonthWeekInfo,
+  getWeekdayDates,
+} from '@/shared/utils/week';
 
 // 기준 날짜가 속한 달의 주차 안에서만 오간다.
 // 두 달에 걸친 주는 목요일이 속한 달로 센다.

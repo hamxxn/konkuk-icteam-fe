@@ -1,9 +1,12 @@
 import { useState } from 'react';
 
-import { parseISO } from '@konkuk-icteam-fe/design-system/date';
+import { parseISO, toISO } from '@konkuk-icteam-fe/design-system/date';
 
-import { checkLunchSlot, SLOT_MINUTES } from '@/shared/config/slot';
+import { SLOT_MINUTES } from '@/shared/config/slot';
 import { MIN_WORK_HOURS_PER_SHIFT } from '@/shared/config/workHours';
+import { formatMonthDay } from '@/shared/utils/formatDate';
+import { checkLunchSlot } from '@/shared/utils/slot';
+import { convertTimeToMinutes } from '@/shared/utils/time';
 
 import {
   APPLY_NEXT_STATUS,
@@ -20,7 +23,7 @@ import type {
   TimeTableMode,
   TimeTableSource,
 } from '../types';
-import { convertTimeToMinutes, createSlotKey, formatDateKey, formatMonthDay } from '../utils';
+import { createSlotKey } from '../utils';
 
 // 근무로 치는 상태. 삭제 예정은 빠질 칸이라 넣지 않는다.
 const WORKING_STATUSES: SlotStatus[] = ['APPLIED', 'PENDING_ADD'];
@@ -49,7 +52,7 @@ const checkHasShortShift = (statuses: SlotStatus[]) => {
 };
 
 const createDay = (date: Date, index: number): TimeTableDay => ({
-  date: formatDateKey(date),
+  date: toISO(date),
   label: WEEKDAY_LABELS[index] ?? '',
   dateLabel: formatMonthDay(date),
 });
@@ -125,7 +128,7 @@ export const useTimeTable = (mode: TimeTableMode, dates: Date[], source: TimeTab
     ];
   };
 
-  const dateKeys = dates.map(formatDateKey);
+  const dateKeys = dates.map(toISO);
 
   // 보고 있는 주의 근무 칸 수. 주 최대 시간을 채우면 빈 칸을 더 누를 수 없다.
   const weekWorkingSlotCount = dateKeys

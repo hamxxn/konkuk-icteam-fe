@@ -2,7 +2,7 @@
 
 import { DatePicker } from '@konkuk-icteam-fe/design-system/ui';
 import { useState } from 'react';
-import { getMonthDates } from '@/shared/lib/calendar';
+import { getMonthDates } from '@/shared/utils/calendar';
 import { useAttendance, useWorkCalendar } from '../_hooks';
 import WorkScheduleCard from './WorkScheduleCard';
 
