@@ -1,7 +1,7 @@
 import { parseISO, toISO } from '@konkuk-icteam-fe/design-system/date';
 import { useEffect, useState } from 'react';
 import { clockIn, getMyWorkShifts, type WorkShift } from '@/shared/apis/workShifts';
-import { checkClockInAvailable } from '../_lib';
+import { checkClockInAvailable } from '../_utils/checkClockInAvailable';
 import type { WorkShiftView } from '../_types';
 
 // 지금 시각을 다시 읽는 주기. 출근 가능 시간대에 들어서면 출근 버튼이 저절로 나타난다

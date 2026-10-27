@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 
-import { Modal, Textarea } from '@konkuk-icteam-fe/design-system/ui';
+import { ConfirmModal, Textarea } from '@konkuk-icteam-fe/design-system/ui';
 
 import type { WorkTimeRange } from '@/shared/apis/common';
 import { formatMonthDayWithWeekday } from '@/shared/utils/formatDate';
@@ -38,15 +38,21 @@ export default function ChangeRequestModal({
   };
 
   return (
-    <Modal
+    <ConfirmModal
       open={open}
       handleOpenChange={handleOpenChange}
-      showCloseButton={false}
-      className='bg-black-1 flex w-[calc(100%-4rem)] max-w-[40rem] flex-col gap-[1.6rem] rounded-[0.6rem] border-0 p-[2rem]'
+      title='근로시간 수정 요청'
+      buttons={[
+        { label: '취소', tone: 'subtle_2', color: 'gray', size: 'medium' },
+        {
+          label: '요청 보내기',
+          color: 'blue',
+          size: 'medium',
+          disabled: trimmedReason.length === 0,
+          onClick: handleSubmit,
+        },
+      ]}
     >
-      <Modal.Header className='flex flex-col gap-[0.4rem]'>
-        <Modal.Title className='font-16-bd text-black'>근로시간 수정 요청</Modal.Title>
-      </Modal.Header>
       <div className='flex flex-col gap-[1.2rem]'>
         <ScheduleChangeList label='삭제' tone='red' schedules={deleteSchedules} />
         <ScheduleChangeList label='추가' tone='blue' schedules={addSchedules} />
@@ -59,21 +65,7 @@ export default function ChangeRequestModal({
         onChange={(event) => setReason(event.target.value)}
         className='resize-none'
       />
-      <Modal.Footer className='flex gap-[0.8rem]'>
-        <Modal.Buttons
-          buttons={[
-            { label: '취소', tone: 'subtle_2', color: 'gray', size: 'medium' },
-            {
-              label: '요청 보내기',
-              color: 'blue',
-              size: 'medium',
-              disabled: trimmedReason.length === 0,
-              onClick: handleSubmit,
-            },
-          ]}
-        />
-      </Modal.Footer>
-    </Modal>
+    </ConfirmModal>
   );
 }
 

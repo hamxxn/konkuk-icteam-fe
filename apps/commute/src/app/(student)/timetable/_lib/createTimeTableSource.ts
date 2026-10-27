@@ -6,8 +6,8 @@ import {
   type WorkApplicationSettings,
 } from '@/shared/apis/workApplications';
 import { getWorkSchedules } from '@/shared/apis/workSchedules';
-import type { TimeTableSource } from '@/shared/components/timetable/types';
-import { createSlotKey } from '@/shared/components/timetable/utils';
+import type { TimeTableSource } from '../_components/timetable/types';
+import { createSlotKey } from '../_components/timetable/utils';
 import { PUBLIC_HOLIDAYS } from '@/shared/config/holidays';
 import { SLOT_MINUTES } from '@/shared/config/slot';
 import { convertMinutesToTime, convertTimeToMinutes } from '@/shared/utils/time';

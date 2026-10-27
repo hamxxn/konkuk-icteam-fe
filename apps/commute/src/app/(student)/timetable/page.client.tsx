@@ -6,9 +6,9 @@ import { useState } from 'react';
 import { BottomCTAButton, Toggle } from '@konkuk-icteam-fe/design-system/ui';
 
 import { getWorkApplicationSettings } from '@/shared/apis/workApplications';
-import TimeTable from '@/shared/components/timetable/base/Week';
-import { useTimeTable } from '@/shared/components/timetable/hooks/useTimeTable';
-import { useTimeTableWeek } from '@/shared/components/timetable/hooks/useTimeTableWeek';
+import TimeTable from './_components/timetable/base/Week';
+import { useTimeTable } from './_components/timetable/hooks/useTimeTable';
+import { useTimeTableWeek } from './_components/timetable/hooks/useTimeTableWeek';
 import { getMonthWeekInfo } from '@/shared/utils/week';
 import { ROUTES } from '@/shared/config/routes';
 

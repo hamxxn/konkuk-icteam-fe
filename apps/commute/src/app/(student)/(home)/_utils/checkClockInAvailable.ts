@@ -1,13 +1,8 @@
 import type { WorkShift } from '@/shared/apis/workShifts';
+import { convertTimeToMinutes } from '@/shared/utils/time';
 
 // 근무 시작 몇 분 전부터 출근할 수 있는지
 const CLOCK_IN_AVAILABLE_BEFORE_MINUTES = 10;
-
-const toMinutes = (time: string) => {
-  const [hours = 0, minutes = 0] = time.split(':').map(Number);
-
-  return hours * 60 + minutes;
-};
 
 /**
  * 지금 이 근무에 출근할 수 있는지 확인합니다. 아직 출근하지 않았고, 근무 시작 10분 전부터 종료 시각 사이면 출근할 수 있습니다.
@@ -25,7 +20,7 @@ export const checkClockInAvailable = (
   const nowMinutes = now.getHours() * 60 + now.getMinutes();
 
   return (
-    nowMinutes >= toMinutes(shift.start) - CLOCK_IN_AVAILABLE_BEFORE_MINUTES &&
-    nowMinutes < toMinutes(shift.end)
+    nowMinutes >= convertTimeToMinutes(shift.start) - CLOCK_IN_AVAILABLE_BEFORE_MINUTES &&
+    nowMinutes < convertTimeToMinutes(shift.end)
   );
 };

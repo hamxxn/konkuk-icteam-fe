@@ -1,4 +1,4 @@
-import type { SlotStatus } from '@/shared/components/timetable/types';
+import type { SlotStatus } from '../_components/timetable/types';
 
 export type SlotLegendItem = { status: SlotStatus; label: string };
 

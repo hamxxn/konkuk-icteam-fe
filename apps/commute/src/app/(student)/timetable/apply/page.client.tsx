@@ -14,10 +14,10 @@ import {
 import { parseISO } from '@konkuk-icteam-fe/design-system/date';
 
 import { saveMyWorkApplication } from '@/shared/apis/workApplications';
-import TimeTable from '@/shared/components/timetable/base/Week';
-import { useTimeTable } from '@/shared/components/timetable/hooks/useTimeTable';
-import { useTimeTableWeek } from '@/shared/components/timetable/hooks/useTimeTableWeek';
-import { mergeSlotsToRanges } from '@/shared/components/timetable/utils';
+import TimeTable from '../_components/timetable/base/Week';
+import { useTimeTable } from '../_components/timetable/hooks/useTimeTable';
+import { useTimeTableWeek } from '../_components/timetable/hooks/useTimeTableWeek';
+import { mergeSlotsToRanges } from '../_components/timetable/utils';
 import { getFirstWeekMonday } from '@/shared/utils/week';
 import { ROUTES } from '@/shared/config/routes';
 import { SLOT_MINUTES } from '@/shared/config/slot';

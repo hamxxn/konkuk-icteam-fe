@@ -15,11 +15,11 @@ import { parseISO } from '@konkuk-icteam-fe/design-system/date';
 
 import { getWorkApplicationSettings } from '@/shared/apis/workApplications';
 import { createWorkChangeRequest, getMyWorkChangeRequests } from '@/shared/apis/workChangeRequests';
-import TimeTable from '@/shared/components/timetable/base/Week';
-import { useTimeTable } from '@/shared/components/timetable/hooks/useTimeTable';
-import { useTimeTableWeek } from '@/shared/components/timetable/hooks/useTimeTableWeek';
-import type { SlotEdit } from '@/shared/components/timetable/types';
-import { mergeSlotsToRanges } from '@/shared/components/timetable/utils';
+import TimeTable from '../_components/timetable/base/Week';
+import { useTimeTable } from '../_components/timetable/hooks/useTimeTable';
+import { useTimeTableWeek } from '../_components/timetable/hooks/useTimeTableWeek';
+import type { SlotEdit } from '../_components/timetable/types';
+import { mergeSlotsToRanges } from '../_components/timetable/utils';
 import { getMonthWeekInfo } from '@/shared/utils/week';
 import { ROUTES } from '@/shared/config/routes';
 import { SLOT_MINUTES } from '@/shared/config/slot';
