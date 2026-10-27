@@ -1,6 +1,6 @@
 'use client';
 
-import { useId } from 'react';
+import { useId, useTransition } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
@@ -26,6 +26,8 @@ const HOME_ROUTE_BY_ROLE: Record<UserRole, string> = {
 // 로그인 폼. 학교 메일과 비밀번호를 받고, 성공하면 역할에 맞는 홈으로 보낸다
 export default function LoginForm() {
   const router = useRouter();
+  // 로그인에 성공해 다음 화면으로 넘어가는 동안. 이때도 버튼을 로딩으로 두어 다시 누르지 못하게 한다
+  const [isNavigating, startNavigation] = useTransition();
   const { formState, handleSubmit, register, setError } = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: { email: '', password: '' },
@@ -42,7 +44,7 @@ export default function LoginForm() {
       return;
     }
 
-    router.push(HOME_ROUTE_BY_ROLE[result.user.role]);
+    startNavigation(() => router.push(HOME_ROUTE_BY_ROLE[result.user.role]));
   };
 
   return (
@@ -89,7 +91,7 @@ export default function LoginForm() {
 
       <div className='flex flex-col gap-[1.2rem]'>
         <Message id={`${fieldIdPrefix}-login-error`} message={loginError} variant='error' />
-        <Button type='submit' color='blue' isLoading={formState.isSubmitting}>
+        <Button type='submit' color='blue' isLoading={formState.isSubmitting || isNavigating}>
           로그인
         </Button>
         <p className='caption-12-md text-center text-gray-400'>
