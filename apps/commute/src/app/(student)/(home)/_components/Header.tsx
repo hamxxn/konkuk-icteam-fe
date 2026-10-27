@@ -1,4 +1,4 @@
-import { getMe } from '@/shared/apis/me';
+import { getMe } from '@/app/(student)/_apis/me';
 
 export default function Header() {
   const { name } = getMe();

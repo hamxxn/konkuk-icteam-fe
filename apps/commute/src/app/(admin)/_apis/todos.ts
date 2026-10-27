@@ -1,5 +1,5 @@
-import { parseApiDate, toApiDate } from '@/shared/apis/common';
-import type { TodoPeriod } from '@/shared/apis/todos';
+import { parseApiDate, toApiDate } from '@/app/(student)/_apis/common';
+import type { TodoPeriod } from '@/app/(student)/_apis/todos';
 import {
   createTodoMock,
   deleteTodoMock,
@@ -10,7 +10,7 @@ import {
 } from './mock/todos';
 
 // 업무 시간대는 근로학생 API(shared/apis/todos)와 같다
-export type { TodoPeriod } from '@/shared/apis/todos';
+export type { TodoPeriod } from '@/app/(student)/_apis/todos';
 
 // 날마다 반복하는 업무
 export type Todo = {

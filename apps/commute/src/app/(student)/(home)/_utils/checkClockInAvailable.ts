@@ -1,4 +1,4 @@
-import type { WorkShift } from '@/shared/apis/workShifts';
+import type { WorkShift } from '@/app/(student)/_apis/workShifts';
 import { convertTimeToMinutes } from '@/shared/utils/time';
 
 // 근무 시작 몇 분 전부터 출근할 수 있는지

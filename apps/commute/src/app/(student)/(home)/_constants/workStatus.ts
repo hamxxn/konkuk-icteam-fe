@@ -1,5 +1,5 @@
-import type { TodoPeriod } from '@/shared/apis/todos';
-import type { WorkStatusCode } from '@/shared/apis/workShifts';
+import type { TodoPeriod } from '@/app/(student)/_apis/todos';
+import type { WorkStatusCode } from '@/app/(student)/_apis/workShifts';
 import type { ChipTone } from '@/shared/ui';
 
 // 근무 상태별 상태 칩 색

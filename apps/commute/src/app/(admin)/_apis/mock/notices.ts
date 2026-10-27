@@ -1,5 +1,5 @@
 import { toISO } from '@konkuk-icteam-fe/design-system/date';
-import type { ApiJson } from '@/shared/apis/common';
+import type { ApiJson } from '@/app/(student)/_apis/common';
 import type { Notice, NoticeInput } from '../notices';
 
 type NoticeJson = ApiJson<Notice>;

@@ -5,7 +5,7 @@ import { useState } from 'react';
 
 import { BottomCTAButton, Toggle } from '@konkuk-icteam-fe/design-system/ui';
 
-import { getWorkApplicationSettings } from '@/shared/apis/workApplications';
+import { getWorkApplicationSettings } from '@/app/(student)/_apis/workApplications';
 import TimeTable from './_components/timetable/base/Week';
 import { useTimeTable } from './_components/timetable/hooks/useTimeTable';
 import { useTimeTableWeek } from './_components/timetable/hooks/useTimeTableWeek';

@@ -4,7 +4,7 @@ import {
   toApiDate,
   toApiDateTime,
   type ApiJson,
-} from '@/shared/apis/common';
+} from '@/app/(student)/_apis/common';
 import { getWorkApplicationMock, saveWorkApplicationMock } from './mock/workApplications';
 
 // 한 달 근로신청 기준. 시간은 모두 시간 단위다

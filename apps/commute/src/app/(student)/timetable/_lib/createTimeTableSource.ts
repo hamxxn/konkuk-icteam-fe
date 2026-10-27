@@ -1,11 +1,11 @@
 import { toISO } from '@konkuk-icteam-fe/design-system/date';
-import { getMe } from '@/shared/apis/me';
+import { getMe } from '@/app/(student)/_apis/me';
 import {
   getMyWorkApplication,
   getWorkApplicationSettings,
   type WorkApplicationSettings,
-} from '@/shared/apis/workApplications';
-import { getWorkSchedules } from '@/shared/apis/workSchedules';
+} from '@/app/(student)/_apis/workApplications';
+import { getWorkSchedules } from '@/app/(student)/_apis/workSchedules';
 import type { TimeTableSource } from '../_components/timetable/types';
 import { createSlotKey } from '../_components/timetable/utils';
 import { PUBLIC_HOLIDAYS } from '@/shared/config/holidays';

@@ -1,4 +1,4 @@
-import { parseApiDate, type ApiJson } from '@/shared/apis/common';
+import { parseApiDate, type ApiJson } from '@/app/(student)/_apis/common';
 import { WORKERS_MOCK } from './mock/workers';
 import { getMonthlyUserIdsMock } from './mock/workApplications';
 import { getMonthlyRecordMock } from './mock/workSchedules';

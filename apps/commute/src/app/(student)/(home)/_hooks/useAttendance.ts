@@ -1,6 +1,6 @@
 import { parseISO, toISO } from '@konkuk-icteam-fe/design-system/date';
 import { useEffect, useState } from 'react';
-import { clockIn, getMyWorkShifts, type WorkShift } from '@/shared/apis/workShifts';
+import { clockIn, getMyWorkShifts, type WorkShift } from '@/app/(student)/_apis/workShifts';
 import { checkClockInAvailable } from '../_utils/checkClockInAvailable';
 import type { WorkShiftView } from '../_types';
 

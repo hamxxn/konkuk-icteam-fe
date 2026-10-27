@@ -1,7 +1,7 @@
 import { cn } from '@konkuk-icteam-fe/design-system/cn';
 import { formatNumber } from '@konkuk-icteam-fe/design-system/date';
 import { CheckBox } from '@konkuk-icteam-fe/design-system/ui';
-import type { DailyTodo } from '@/shared/apis/todos';
+import type { DailyTodo } from '@/app/(student)/_apis/todos';
 
 type DailyTaskPanelProps = {
   todos: DailyTodo[];

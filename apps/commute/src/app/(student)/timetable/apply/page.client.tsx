@@ -13,7 +13,7 @@ import {
 
 import { parseISO } from '@konkuk-icteam-fe/design-system/date';
 
-import { saveMyWorkApplication } from '@/shared/apis/workApplications';
+import { saveMyWorkApplication } from '@/app/(student)/_apis/workApplications';
 import TimeTable from '../_components/timetable/base/Week';
 import { useTimeTable } from '../_components/timetable/hooks/useTimeTable';
 import { useTimeTableWeek } from '../_components/timetable/hooks/useTimeTableWeek';

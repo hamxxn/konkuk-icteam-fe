@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { getWorkApplicationSettings } from '@/shared/apis/workApplications';
-import { getMyWorkRecord } from '@/shared/apis/workRecords';
+import { getWorkApplicationSettings } from '@/app/(student)/_apis/workApplications';
+import { getMyWorkRecord } from '@/app/(student)/_apis/workRecords';
 
 const MINUTES_PER_HOUR = 60;
 

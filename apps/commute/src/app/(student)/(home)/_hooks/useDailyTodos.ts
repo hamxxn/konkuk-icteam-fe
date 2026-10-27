@@ -5,7 +5,7 @@ import {
   updateTodoCompletion,
   type DailyTodo,
   type TodoPeriod,
-} from '@/shared/apis/todos';
+} from '@/app/(student)/_apis/todos';
 
 // 고른 날의 오전·오후 업무를 관리한다. 업무는 그날 근무하는 사람들이 함께 체크해서, 동료가 체크한 것도 같이 보인다
 export const useDailyTodos = (date: string) => {

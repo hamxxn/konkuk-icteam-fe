@@ -2,7 +2,7 @@
 
 import { cn } from '@konkuk-icteam-fe/design-system/cn';
 import { useEffect, useRef, useState } from 'react';
-import { getNotices, type Notice } from '@/shared/apis/notices';
+import { getNotices, type Notice } from '@/app/(student)/_apis/notices';
 
 // 관리자가 올린 공지 중 오늘 게시 중인 것. 공지가 없으면 자리를 차지하지 않는다
 export default function NoticeSection() {

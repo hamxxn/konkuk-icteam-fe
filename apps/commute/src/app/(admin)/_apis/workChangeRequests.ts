@@ -2,14 +2,14 @@ import {
   toWorkChangeRequest,
   type WorkChangeRequest,
   type WorkChangeRequestStatusCode,
-} from '@/shared/apis/workChangeRequests';
+} from '@/app/(student)/_apis/workChangeRequests';
 import { getWorkChangeRequestsMock, updateWorkChangeRequestMock } from './mock/workChangeRequests';
 
 // 근무 변경 요청 한 건의 모양은 근로학생 API(shared/apis/workChangeRequests)와 같다
 export type {
   WorkChangeRequest,
   WorkChangeRequestStatusCode,
-} from '@/shared/apis/workChangeRequests';
+} from '@/app/(student)/_apis/workChangeRequests';
 
 export type GetWorkChangeRequestsRequest = {
   year: number;

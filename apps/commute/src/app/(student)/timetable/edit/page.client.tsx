@@ -13,8 +13,11 @@ import {
 
 import { parseISO } from '@konkuk-icteam-fe/design-system/date';
 
-import { getWorkApplicationSettings } from '@/shared/apis/workApplications';
-import { createWorkChangeRequest, getMyWorkChangeRequests } from '@/shared/apis/workChangeRequests';
+import { getWorkApplicationSettings } from '@/app/(student)/_apis/workApplications';
+import {
+  createWorkChangeRequest,
+  getMyWorkChangeRequests,
+} from '@/app/(student)/_apis/workChangeRequests';
 import TimeTable from '../_components/timetable/base/Week';
 import { useTimeTable } from '../_components/timetable/hooks/useTimeTable';
 import { useTimeTableWeek } from '../_components/timetable/hooks/useTimeTableWeek';

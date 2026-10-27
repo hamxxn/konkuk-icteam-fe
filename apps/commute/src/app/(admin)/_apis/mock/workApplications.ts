@@ -1,5 +1,5 @@
 import { formatNumber } from '@konkuk-icteam-fe/design-system/date';
-import type { ApiJson } from '@/shared/apis/common';
+import type { ApiJson } from '@/app/(student)/_apis/common';
 import type { WorkApplicationSettings } from '../workApplications';
 import { WORKERS_MOCK } from './workers';
 

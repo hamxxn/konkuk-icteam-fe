@@ -1,4 +1,4 @@
-import type { ApiJson } from '@/shared/apis/common';
+import type { ApiJson } from '@/app/(student)/_apis/common';
 import type { Worker } from '../workers';
 
 // 같은 조직의 모든 근로장학생 (서버가 보낼 JSON 모양). 정보 수정은 여기에 바로 반영된다

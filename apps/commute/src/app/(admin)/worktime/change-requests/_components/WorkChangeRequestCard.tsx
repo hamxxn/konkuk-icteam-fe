@@ -1,7 +1,7 @@
 import { cn } from '@konkuk-icteam-fe/design-system/cn';
 import { toISO } from '@konkuk-icteam-fe/design-system/date';
 import { Button, StateChip } from '@konkuk-icteam-fe/design-system/ui';
-import type { WorkTimeRange } from '@/shared/apis/common';
+import type { WorkTimeRange } from '@/app/(student)/_apis/common';
 import type { WorkChangeRequest } from '../../../_apis/workChangeRequests';
 import { formatMonthDay, formatMonthDayTime } from '@/shared/utils/formatDate';
 

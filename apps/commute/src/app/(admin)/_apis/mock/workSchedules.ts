@@ -1,5 +1,5 @@
 import { parseISO } from '@konkuk-icteam-fe/design-system/date';
-import type { ApiJson } from '@/shared/apis/common';
+import type { ApiJson } from '@/app/(student)/_apis/common';
 import { LUNCH_BREAK, SLOT_MINUTES, SLOT_TIMES } from '@/shared/config/slot';
 import { MIN_WORK_HOURS_PER_SHIFT } from '@/shared/config/workHours';
 import { checkWeekend } from '@/shared/utils/calendar';

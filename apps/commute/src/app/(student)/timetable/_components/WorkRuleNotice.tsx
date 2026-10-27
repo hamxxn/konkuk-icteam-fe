@@ -1,5 +1,5 @@
 import { IconInfo } from '@konkuk-icteam-fe/design-system/assets';
-import type { WorkApplicationSettings } from '@/shared/apis/workApplications';
+import type { WorkApplicationSettings } from '@/app/(student)/_apis/workApplications';
 import { MIN_WORK_HOURS_PER_SHIFT } from '@/shared/config/workHours';
 
 type WorkRuleNoticeProps = {

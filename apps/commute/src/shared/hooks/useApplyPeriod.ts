@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { getWorkApplicationSettings } from '@/shared/apis/workApplications';
+import { getWorkApplicationSettings } from '@/app/(student)/_apis/workApplications';
 
 // 다음 달 근로 신청 기간. 관리자가 신청을 열고 나를 명단에 넣으면, 그 기간 안에서 신청하고 마감 전까지 바꿀 수 있다
 export const useApplyPeriod = () => {

@@ -1,10 +1,10 @@
 import { parseISO } from '@konkuk-icteam-fe/design-system/date';
-import { parseApiDate, toApiDate, type TimeString } from '@/shared/apis/common';
+import { parseApiDate, toApiDate, type TimeString } from '@/app/(student)/_apis/common';
 import type {
   GetWorkSchedulesRequest,
   WorkScheduleDay,
   WorkScheduleUser,
-} from '@/shared/apis/workSchedules';
+} from '@/app/(student)/_apis/workSchedules';
 import {
   createWorkScheduleMock,
   deleteWorkScheduleMock,
@@ -18,7 +18,7 @@ export type {
   WorkScheduleDay,
   WorkScheduleSlot,
   WorkScheduleUser,
-} from '@/shared/apis/workSchedules';
+} from '@/app/(student)/_apis/workSchedules';
 
 export type GetWorkSchedulesResponse = {
   startDate: Date;

@@ -4,7 +4,7 @@ import { useState } from 'react';
 
 import { ConfirmModal, Textarea } from '@konkuk-icteam-fe/design-system/ui';
 
-import type { WorkTimeRange } from '@/shared/apis/common';
+import type { WorkTimeRange } from '@/app/(student)/_apis/common';
 import { formatMonthDayWithWeekday } from '@/shared/utils/formatDate';
 
 type ChangeRequestModalProps = {

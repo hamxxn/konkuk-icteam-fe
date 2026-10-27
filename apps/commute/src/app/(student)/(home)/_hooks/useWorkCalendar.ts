@@ -1,6 +1,6 @@
 import { startOfMonth, toISO } from '@konkuk-icteam-fe/design-system/date';
 import { useMemo, useState } from 'react';
-import { getMyWorkDates } from '@/shared/apis/workShifts';
+import { getMyWorkDates } from '@/app/(student)/_apis/workShifts';
 
 // 근무 달력에서 보고 있는 달과 고른 날짜를 관리한다. 처음에는 오늘이 속한 달과 오늘을 보여 준다.
 export const useWorkCalendar = (today: Date) => {

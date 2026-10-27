@@ -1,5 +1,5 @@
-import { toApiDate, type ApiJson } from '@/shared/apis/common';
-import { toNotice, type Notice } from '@/shared/apis/notices';
+import { toApiDate, type ApiJson } from '@/app/(student)/_apis/common';
+import { toNotice, type Notice } from '@/app/(student)/_apis/notices';
 import {
   createNoticeMock,
   deleteNoticeMock,
@@ -8,7 +8,7 @@ import {
 } from './mock/notices';
 
 // 공지 한 건의 모양은 근로학생 API(shared/apis/notices)와 같다
-export type { Notice } from '@/shared/apis/notices';
+export type { Notice } from '@/app/(student)/_apis/notices';
 
 // 공지를 등록하거나 고칠 때 보내는 값
 export type NoticeInput = Pick<Notice, 'title' | 'content' | 'startDate' | 'endDate'>;
