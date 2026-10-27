@@ -1,7 +1,8 @@
 import { cn } from '@konkuk-icteam-fe/design-system/cn';
 import { toISO } from '@konkuk-icteam-fe/design-system/date';
 import { Button, StateChip } from '@konkuk-icteam-fe/design-system/ui';
-import type { WorkChangeRequest, WorkChangeSchedule } from '../../../_apis/workChangeRequests';
+import type { WorkTimeRange } from '@/shared/apis/common';
+import type { WorkChangeRequest } from '../../../_apis/workChangeRequests';
 import { formatMonthDay, formatMonthDayTime } from '@/shared/utils/formatDate';
 
 type WorkChangeRequestCardProps = {
@@ -16,13 +17,13 @@ const STATUS_CHIP = {
   CS03: { label: '반려', tone: 'red' },
 } as const;
 
-const formatSchedule = ({ date, start, end }: WorkChangeSchedule) =>
+const formatSchedule = ({ date, start, end }: WorkTimeRange) =>
   `${formatMonthDay(date)} ${start}-${end}`;
 
 type ScheduleListProps = {
   label: string;
   className: string;
-  schedules: WorkChangeSchedule[];
+  schedules: WorkTimeRange[];
 };
 
 const ScheduleList = ({ label, className, schedules }: ScheduleListProps) =>

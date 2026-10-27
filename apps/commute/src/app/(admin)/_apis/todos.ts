@@ -1,4 +1,5 @@
 import { parseApiDate, toApiDate } from '@/shared/apis/common';
+import type { TodoPeriod } from '@/shared/apis/todos';
 import {
   createTodoMock,
   deleteTodoMock,
@@ -8,8 +9,8 @@ import {
   updateTodoMock,
 } from './mock/todos';
 
-// 업무 시간대. 12시 전에 시작하는 근무는 오전, 나머지는 오후
-export type TodoPeriod = 'MORNING' | 'AFTERNOON';
+// 업무 시간대는 근로학생 API(shared/apis/todos)와 같다
+export type { TodoPeriod } from '@/shared/apis/todos';
 
 // 날마다 반복하는 업무
 export type Todo = {

@@ -1,33 +1,15 @@
 import {
-  parseApiDate,
-  parseApiDateTime,
-  type ApiJson,
-  type TimeString,
-} from '@/shared/apis/common';
+  toWorkChangeRequest,
+  type WorkChangeRequest,
+  type WorkChangeRequestStatusCode,
+} from '@/shared/apis/workChangeRequests';
 import { getWorkChangeRequestsMock, updateWorkChangeRequestMock } from './mock/workChangeRequests';
 
-// CS01 승인 대기 · CS02 승인 · CS03 반려
-export type WorkChangeRequestStatusCode = 'CS01' | 'CS02' | 'CS03';
-
-export type WorkChangeSchedule = {
-  date: Date;
-  start: TimeString;
-  end: TimeString;
-};
-
-// 근로학생이 보낸 근무 변경 요청 한 건. 뺄 근무와 더할 근무 중 한쪽만 있을 수도 있다
-export type WorkChangeRequest = {
-  requestId: number;
-  userId: number;
-  userName: string;
-  statusCode: WorkChangeRequestStatusCode;
-  requestedAt: Date;
-  reason: string;
-  // 반려한 요청에만 있다
-  rejectReason: string | null;
-  deleteSchedules: WorkChangeSchedule[];
-  addSchedules: WorkChangeSchedule[];
-};
+// 근무 변경 요청 한 건의 모양은 근로학생 API(shared/apis/workChangeRequests)와 같다
+export type {
+  WorkChangeRequest,
+  WorkChangeRequestStatusCode,
+} from '@/shared/apis/workChangeRequests';
 
 export type GetWorkChangeRequestsRequest = {
   year: number;
@@ -57,19 +39,6 @@ export type UpdateWorkChangeRequestRequest =
 
 export type UpdateWorkChangeRequestResponse = WorkChangeRequest;
 
-const toRequest = (json: ApiJson<WorkChangeRequest>): WorkChangeRequest => ({
-  ...json,
-  requestedAt: parseApiDateTime(json.requestedAt),
-  deleteSchedules: json.deleteSchedules.map((schedule) => ({
-    ...schedule,
-    date: parseApiDate(schedule.date),
-  })),
-  addSchedules: json.addSchedules.map((schedule) => ({
-    ...schedule,
-    date: parseApiDate(schedule.date),
-  })),
-});
-
 /**
  * GET /admin/work-change-requests?year=&month=
  * 한 달 동안 들어온 근무 변경 요청과 상태별 건수. 대시보드는 summary.pendingCount만 쓴다
@@ -78,7 +47,7 @@ export const getWorkChangeRequests = ({
   year,
   month,
 }: GetWorkChangeRequestsRequest): GetWorkChangeRequestsResponse => {
-  const requests = getWorkChangeRequestsMock(year, month).map(toRequest);
+  const requests = getWorkChangeRequestsMock(year, month).map(toWorkChangeRequest);
   const countByStatus = (statusCode: WorkChangeRequestStatusCode) =>
     requests.filter((request) => request.statusCode === statusCode).length;
 
@@ -102,7 +71,7 @@ export const getWorkChangeRequests = ({
 export const updateWorkChangeRequest = (
   request: UpdateWorkChangeRequestRequest,
 ): UpdateWorkChangeRequestResponse =>
-  toRequest(
+  toWorkChangeRequest(
     updateWorkChangeRequestMock(request.requestId, {
       statusCode: request.statusCode,
       rejectReason: request.statusCode === 'CS03' ? request.rejectReason : null,

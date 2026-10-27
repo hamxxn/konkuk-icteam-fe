@@ -16,7 +16,8 @@ export type GetNoticesResponse = {
   notices: Notice[];
 };
 
-const toNotice = (json: ApiJson<Notice>): Notice => ({
+// 응답 JSON을 날짜가 Date인 공지로 바꾼다. 관리자 API도 같은 모양이라 함께 쓴다
+export const toNotice = (json: ApiJson<Notice>): Notice => ({
   ...json,
   startDate: parseApiDate(json.startDate),
   endDate: parseApiDate(json.endDate),

@@ -60,7 +60,8 @@ const toWorkTimeRangeJson = (range: WorkTimeRange): ApiJson<WorkTimeRange> => ({
   date: toApiDate(range.date),
 });
 
-const toRequest = (json: ApiJson<WorkChangeRequest>): WorkChangeRequest => ({
+// 응답 JSON을 날짜가 Date인 요청으로 바꾼다. 관리자 API도 같은 모양이라 함께 쓴다
+export const toWorkChangeRequest = (json: ApiJson<WorkChangeRequest>): WorkChangeRequest => ({
   ...json,
   requestedAt: parseApiDateTime(json.requestedAt),
   deleteSchedules: json.deleteSchedules.map(toWorkTimeRange),
@@ -79,7 +80,7 @@ export const getMyWorkChangeRequests = ({
   month,
   requests: getWorkChangeRequestsMock(year, month)
     .filter(({ userId }) => userId === MY_USER_ID)
-    .map(toRequest),
+    .map(toWorkChangeRequest),
 });
 
 /**
@@ -91,7 +92,7 @@ export const createWorkChangeRequest = ({
   deleteSchedules,
   addSchedules,
 }: CreateWorkChangeRequestRequest): CreateWorkChangeRequestResponse =>
-  toRequest(
+  toWorkChangeRequest(
     addWorkChangeRequestMock({
       userId: MY_USER_ID,
       userName: getMyNameMock(),

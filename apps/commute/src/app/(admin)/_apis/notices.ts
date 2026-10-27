@@ -1,4 +1,5 @@
-import { parseApiDate, parseApiDateTime, toApiDate, type ApiJson } from '@/shared/apis/common';
+import { toApiDate, type ApiJson } from '@/shared/apis/common';
+import { toNotice, type Notice } from '@/shared/apis/notices';
 import {
   createNoticeMock,
   deleteNoticeMock,
@@ -6,15 +7,8 @@ import {
   updateNoticeMock,
 } from './mock/notices';
 
-// 근로학생에게 보이는 공지사항. 게시 기간(시작일~마감일, 둘 다 포함) 동안만 보인다
-export type Notice = {
-  noticeId: number;
-  title: string;
-  content: string;
-  startDate: Date;
-  endDate: Date;
-  createdAt: Date;
-};
+// 공지 한 건의 모양은 근로학생 API(shared/apis/notices)와 같다
+export type { Notice } from '@/shared/apis/notices';
 
 // 공지를 등록하거나 고칠 때 보내는 값
 export type NoticeInput = Pick<Notice, 'title' | 'content' | 'startDate' | 'endDate'>;
@@ -37,13 +31,6 @@ export type UpdateNoticeResponse = Notice;
 export type DeleteNoticeRequest = {
   noticeId: number;
 };
-
-const toNotice = (json: ApiJson<Notice>): Notice => ({
-  ...json,
-  startDate: parseApiDate(json.startDate),
-  endDate: parseApiDate(json.endDate),
-  createdAt: parseApiDateTime(json.createdAt),
-});
 
 const toNoticeInputJson = ({
   title,

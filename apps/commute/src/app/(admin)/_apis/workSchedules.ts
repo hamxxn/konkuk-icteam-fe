@@ -1,5 +1,10 @@
 import { parseISO } from '@konkuk-icteam-fe/design-system/date';
 import { parseApiDate, toApiDate, type TimeString } from '@/shared/apis/common';
+import type {
+  GetWorkSchedulesRequest,
+  WorkScheduleDay,
+  WorkScheduleUser,
+} from '@/shared/apis/workSchedules';
 import {
   createWorkScheduleMock,
   deleteWorkScheduleMock,
@@ -7,31 +12,13 @@ import {
   getMaxConcurrentWorkersMock,
 } from './mock/workSchedules';
 
-// 한 칸에 배치된 근로학생. scheduleId는 이 사람의 이 칸 배치 한 건이다 (뺄 때 보낸다)
-export type WorkScheduleUser = {
-  scheduleId: number;
-  userId: number;
-  userName: string;
-};
-
-// 30분 단위 근무 칸 (예: 09:00~09:30). 아무도 없는 칸도 users가 빈 배열로 온다
-export type WorkScheduleSlot = {
-  start: TimeString;
-  end: TimeString;
-  users: WorkScheduleUser[];
-};
-
-export type WorkScheduleDay = {
-  date: Date;
-  // 09:00부터 18:00까지 18칸. 점심시간(11:30~13:00) 칸도 온다
-  slots: WorkScheduleSlot[];
-};
-
-// 기간의 첫날과 마지막 날 (둘 다 포함)
-export type GetWorkSchedulesRequest = {
-  startDate: Date;
-  endDate: Date;
-};
+// 칸·날짜·조회 기간의 모양은 근로학생 API(shared/apis/workSchedules)와 같다
+export type {
+  GetWorkSchedulesRequest,
+  WorkScheduleDay,
+  WorkScheduleSlot,
+  WorkScheduleUser,
+} from '@/shared/apis/workSchedules';
 
 export type GetWorkSchedulesResponse = {
   startDate: Date;
