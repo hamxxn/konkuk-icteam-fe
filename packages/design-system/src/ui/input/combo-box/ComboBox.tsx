@@ -5,6 +5,7 @@ import { cn } from '@konkuk-icteam-fe/design-system/cn';
 import Input from '../base/Input';
 import { Command, CommandEmpty, CommandGroup, CommandItem, CommandList } from '../base/command';
 import useClickOutside from '../hooks/useClickOutside';
+import useComposingEnter from '../hooks/useComposingEnter';
 
 type ComboBoxProps = {
   options: string[];
@@ -59,10 +60,7 @@ export default function ComboBox({
     setIsOpen(false);
   };
 
-  // 한글처럼 조합 중인 글자에서 누른 Enter는 브라우저가 글자 확정에 먼저 쓰고, cmdk는 그 Enter를 무시한다.
-  // 그래서 조합이 끝나 목록이 다시 그려진 뒤, 그때 강조된 항목을 직접 고른다
-  const isEnterWhileComposingRef = useRef(false);
-
+  // 한글 조합 중 누른 Enter는 cmdk가 무시한다. 조합이 끝나 목록이 다시 그려진 뒤, 그때 강조된 항목을 직접 고른다
   const selectHighlightedOption = () => {
     requestAnimationFrame(() => {
       const highlighted = rootRef.current
@@ -72,22 +70,7 @@ export default function ComboBox({
     });
   };
 
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key !== 'Enter') return;
-    // 크롬: 조합 중에 Enter keydown이 먼저 오고, 그다음 조합이 끝난다
-    if (event.nativeEvent.isComposing) {
-      isEnterWhileComposingRef.current = true;
-      return;
-    }
-    // 사파리: 조합이 먼저 끝나고, 그 뒤 keyCode 229인 Enter가 온다
-    if (event.keyCode === 229) selectHighlightedOption();
-  };
-
-  const handleCompositionEnd = () => {
-    if (!isEnterWhileComposingRef.current) return;
-    isEnterWhileComposingRef.current = false;
-    selectHighlightedOption();
-  };
+  const { handleComposingEnter, handleCompositionEnd } = useComposingEnter(selectHighlightedOption);
 
   return (
     <div
@@ -114,7 +97,7 @@ export default function ComboBox({
             setQuery(e.target.value);
             setIsOpen(true);
           }}
-          onKeyDown={handleKeyDown}
+          onKeyDown={handleComposingEnter}
           onCompositionEnd={handleCompositionEnd}
           value={query}
           className={cn('h-[4.2rem] w-full', inputClassName)}
