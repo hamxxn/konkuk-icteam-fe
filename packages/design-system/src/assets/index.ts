@@ -14,6 +14,8 @@ export { default as IconCheck } from './components/IconCheck';
 export { default as IconClose } from './components/IconClose';
 export { default as IconDashboard } from './components/IconDashboard';
 export { default as IconEllipse } from './components/IconEllipse';
+export { default as IconEye } from './components/IconEye';
+export { default as IconEyeOff } from './components/IconEyeOff';
 export { default as IconFilter } from './components/IconFilter';
 export { default as IconHome } from './components/IconHome';
 export { default as IconHomeFill } from './components/IconHomeFill';
