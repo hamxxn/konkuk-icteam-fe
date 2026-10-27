@@ -33,6 +33,7 @@ export default function PageClient({ tab }: PageClientProps) {
 
   return (
     <div className='mx-auto w-full max-w-[140rem] p-[3.4rem]'>
+      <h2 className='title-23-eb text-red'>민홍아 여긴 너가 해</h2>
       <section className='bg-black-1 flex flex-col gap-[2.4rem] rounded-[1.2rem] border border-gray-50 p-[3.2rem]'>
         <Tabs>
           <Tabs.List activeValue={tab} tabs={tabs} aria-label='보기'>
