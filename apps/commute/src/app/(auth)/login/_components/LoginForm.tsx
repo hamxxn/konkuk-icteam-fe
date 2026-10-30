@@ -8,15 +8,12 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Input, Message } from '@konkuk-icteam-fe/design-system/ui';
 import { ROUTES } from '@/shared/config/routes';
 import { USER_ROLE, type UserRole } from '@/shared/constants/userRole';
-import { login, type LoginErrorCode } from '../../_apis/auth';
+import { login } from '../../_apis/auth';
 import { loginSchema, type LoginFormValues } from '../_lib/loginSchema';
 import PasswordInput from './PasswordInput';
 
 // 로그인에 실패했을 때 폼 아래에 보여 줄 글자. 메일이 없는지 비밀번호가 틀렸는지는 알려 주지 않는다
-const LOGIN_ERROR_MESSAGE: Record<LoginErrorCode, string> = {
-  INVALID_CREDENTIALS: '이메일 또는 비밀번호가 틀렸습니다.',
-  PENDING_APPROVAL: '관리자가 가입을 승인하면 로그인할 수 있어요. 승인을 기다려 주세요.',
-};
+const INVALID_CREDENTIALS_MESSAGE = '이메일 또는 비밀번호가 틀렸습니다.';
 
 // 로그인한 뒤 역할에 따라 처음 보여 줄 화면
 const HOME_ROUTE_BY_ROLE: Record<UserRole, string> = {
@@ -24,10 +21,10 @@ const HOME_ROUTE_BY_ROLE: Record<UserRole, string> = {
   [USER_ROLE.ADMIN]: ROUTES.ADMIN_HOME,
 };
 
-// 로그인 폼. 학교 메일과 비밀번호를 받고, 성공하면 역할에 맞는 홈으로 보낸다
+// 로그인 폼. 학교 메일과 비밀번호를 받고, 성공하면 역할에 맞는 홈으로, 승인 대기 계정이면 승인 대기 화면으로 보낸다
 export default function LoginForm() {
   const router = useRouter();
-  // 로그인에 성공해 다음 화면으로 넘어가는 동안. 이때도 버튼을 로딩으로 두어 다시 누르지 못하게 한다
+  // 로그인 뒤 다음 화면으로 넘어가는 동안. 이때도 버튼을 로딩으로 두어 다시 누르지 못하게 한다
   const [isNavigating, startNavigation] = useTransition();
   const { formState, handleSubmit, register, setError } = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
@@ -40,12 +37,16 @@ export default function LoginForm() {
 
   const handleValidSubmit = (values: LoginFormValues) => {
     const result = login(values);
-    if (!result.isSuccess) {
-      setError('root', { message: LOGIN_ERROR_MESSAGE[result.errorCode] });
+    if (result.isSuccess) {
+      startNavigation(() => router.push(HOME_ROUTE_BY_ROLE[result.user.role]));
+      return;
+    }
+    if (result.errorCode === 'PENDING_APPROVAL') {
+      startNavigation(() => router.push(ROUTES.PENDING_APPROVAL));
       return;
     }
 
-    startNavigation(() => router.push(HOME_ROUTE_BY_ROLE[result.user.role]));
+    setError('root', { message: INVALID_CREDENTIALS_MESSAGE });
   };
 
   return (
