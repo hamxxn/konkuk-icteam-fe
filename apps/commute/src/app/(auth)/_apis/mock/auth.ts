@@ -1,5 +1,6 @@
 import { WORKERS_MOCK } from '@/app/(admin)/_apis/mock/workers';
 import { MY_USER_ID } from '@/app/(student)/_apis/mock/me';
+import { USER_ROLE } from '@/shared/constants/userRole';
 import type { LoginErrorResponse, LoginRequest, LoginResponse } from '../auth';
 
 // 목업 계정은 모두 같은 비밀번호를 쓴다 (목업 전용 값)
@@ -22,7 +23,7 @@ const getStudentAccountMock = (): AccountMock | undefined => {
   return {
     email: worker.email,
     password: PASSWORD_MOCK,
-    user: { userId: worker.userId, name: worker.name, role: 'STUDENT' },
+    user: { userId: worker.userId, name: worker.name, role: USER_ROLE.STUDENT },
     isApproved: true,
   };
 };
@@ -31,7 +32,7 @@ const getStudentAccountMock = (): AccountMock | undefined => {
 const ADMIN_ACCOUNT_MOCK: AccountMock = {
   email: 'admin@konkuk.ac.kr',
   password: PASSWORD_MOCK,
-  user: { userId: 100, name: '김정보', role: 'ADMIN' },
+  user: { userId: 100, name: '김정보', role: USER_ROLE.ADMIN },
   isApproved: true,
 };
 
@@ -39,7 +40,7 @@ const ADMIN_ACCOUNT_MOCK: AccountMock = {
 const PENDING_ACCOUNT_MOCK: AccountMock = {
   email: 'newbie@konkuk.ac.kr',
   password: PASSWORD_MOCK,
-  user: { userId: 200, name: '박새봄', role: 'STUDENT' },
+  user: { userId: 200, name: '박새봄', role: USER_ROLE.STUDENT },
   isApproved: false,
 };
 

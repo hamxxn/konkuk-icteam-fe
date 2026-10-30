@@ -1,7 +1,5 @@
+import type { UserRole } from '@/shared/constants/userRole';
 import { loginMock } from './mock/auth';
-
-// 로그인한 사용자가 근로장학생인지 관리자인지. 서버가 로그인 응답으로 알려 준다
-export type UserRole = 'STUDENT' | 'ADMIN';
 
 export type LoginRequest = {
   // 학교 메일 (@konkuk.ac.kr)

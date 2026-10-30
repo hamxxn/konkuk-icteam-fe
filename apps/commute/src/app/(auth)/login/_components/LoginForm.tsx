@@ -7,7 +7,8 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Input, Message } from '@konkuk-icteam-fe/design-system/ui';
 import { ROUTES } from '@/shared/config/routes';
-import { login, type LoginErrorCode, type UserRole } from '../../_apis/auth';
+import { USER_ROLE, type UserRole } from '@/shared/constants/userRole';
+import { login, type LoginErrorCode } from '../../_apis/auth';
 import { loginSchema, type LoginFormValues } from '../_lib/loginSchema';
 import PasswordInput from './PasswordInput';
 
@@ -19,8 +20,8 @@ const LOGIN_ERROR_MESSAGE: Record<LoginErrorCode, string> = {
 
 // 로그인한 뒤 역할에 따라 처음 보여 줄 화면
 const HOME_ROUTE_BY_ROLE: Record<UserRole, string> = {
-  STUDENT: ROUTES.HOME,
-  ADMIN: ROUTES.ADMIN_HOME,
+  [USER_ROLE.STUDENT]: ROUTES.HOME,
+  [USER_ROLE.ADMIN]: ROUTES.ADMIN_HOME,
 };
 
 // 로그인 폼. 학교 메일과 비밀번호를 받고, 성공하면 역할에 맞는 홈으로 보낸다
