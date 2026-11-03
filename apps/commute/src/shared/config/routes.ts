@@ -1,5 +1,10 @@
 // 앱 화면 주소. 링크·이동·메뉴는 주소를 직접 쓰지 않고 여기서 가져온다
 export const ROUTES = {
+  // 로그인·회원가입 ((auth) 그룹). 근로장학생과 관리자가 같은 화면을 쓴다
+  LOGIN: '/login',
+  SIGNUP: '/signup',
+  // 가입 승인을 기다리는 계정이 로그인하면 가는 안내 화면
+  PENDING_APPROVAL: '/pending-approval',
   HOME: '/',
   TIMETABLE: '/timetable',
   TIMETABLE_APPLY: '/timetable/apply',

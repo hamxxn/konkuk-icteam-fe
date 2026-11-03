@@ -7,6 +7,15 @@ import { Command, CommandEmpty, CommandGroup, CommandItem, CommandList } from '.
 import useClickOutside from '../hooks/useClickOutside';
 import useComposingEnter from '../hooks/useComposingEnter';
 
+// 안쪽 입력칸에 그대로 넘기는 속성 (라벨과 잇는 id, 오류 표시, 테두리, 자동완성, ref 등).
+// 값·입력 이벤트·placeholder·className은 ComboBox가 다루므로 받지 않는다
+type ComboBoxInputProps = Omit<
+  React.ComponentProps<typeof Input>,
+  'value' | 'onChange' | 'onKeyDown' | 'onCompositionEnd' | 'placeholder' | 'className'
+> & {
+  ref?: React.Ref<HTMLInputElement>;
+};
+
 type ComboBoxProps = {
   options: string[];
   placeholder?: string;
@@ -20,6 +29,9 @@ type ComboBoxProps = {
   autoFocus?: boolean;
   // 눈에 보이는 라벨이 없을 때 스크린리더가 읽을 입력칸 이름
   'aria-label'?: string;
+  inputProps?: ComboBoxInputProps;
+  // 고를 항목이 없을 때 '결과가 없습니다.'를 보여 줄지. false면 항목이 없을 때 목록을 닫아 둔다 (자동완성처럼 후보가 있을 때만 띄울 때)
+  showEmptyMessage?: boolean;
 };
 
 export default function ComboBox({
@@ -33,6 +45,8 @@ export default function ComboBox({
   optionWrapperClassName,
   autoFocus,
   'aria-label': ariaLabel,
+  inputProps,
+  showEmptyMessage = true,
 }: ComboBoxProps) {
   const rootRef = useRef<HTMLDivElement>(null);
 
@@ -93,6 +107,7 @@ export default function ComboBox({
           autoFocus={autoFocus}
           aria-label={ariaLabel}
           hasBorder={false}
+          {...inputProps}
           onChange={(e) => {
             setQuery(e.target.value);
             setIsOpen(true);
@@ -103,8 +118,9 @@ export default function ComboBox({
           className={cn('h-[4.2rem] w-full', inputClassName)}
         />
 
-        {isOpen && (
-          <div className='absolute top-[calc(4.2rem+0.5rem)] left-0 w-full'>
+        {/* 펼친 목록은 뒤에 오는 칸·버튼(position이나 opacity가 있으면 위에 그려진다)보다 위에, 모달(z-50)보다는 아래에 둔다 */}
+        {isOpen && (showEmptyMessage || options.length > 0) && (
+          <div className='absolute top-[calc(4.2rem+0.5rem)] left-0 z-30 w-full'>
             <CommandList
               className={cn(
                 'bg-black-1 max-h-[20rem] overflow-auto rounded-[0.4rem] p-[0.4rem] shadow-[0_0_12px_0_rgba(69,66,90,0.14)]',
