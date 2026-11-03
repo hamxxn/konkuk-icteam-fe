@@ -5,13 +5,13 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useController, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Button, ComboBox, Message } from '@konkuk-icteam-fe/design-system/ui';
+import { Button, Message } from '@konkuk-icteam-fe/design-system/ui';
 import { ROUTES } from '@/shared/config/routes';
 import { USER_ROLE, type UserRole } from '@/shared/constants/userRole';
 import { login } from '../../_apis/auth';
 import { loginSchema, type LoginFormValues } from '../_lib/loginSchema';
-import { getSchoolEmailSuggestions } from '../_utils/schoolEmail';
 import PasswordInput from './PasswordInput';
+import SchoolEmailInput from './SchoolEmailInput';
 
 // 로그인에 실패했을 때 폼 아래에 보여 줄 글자. 메일이 없는지 비밀번호가 틀렸는지는 알려 주지 않는다
 const INVALID_CREDENTIALS_MESSAGE = '이메일 또는 비밀번호가 틀렸습니다.';
@@ -31,9 +31,12 @@ export default function LoginForm() {
     resolver: zodResolver(loginSchema),
     defaultValues: { email: '', password: '' },
   });
-  // 메일 칸은 ComboBox라 register 대신 useController로 잇는다. 비밀번호(register)보다 먼저 불러야
-  // 폼 순서대로 등록돼, 둘 다 틀렸을 때 메일 칸에 먼저 초점이 간다
-  const { field: emailField } = useController({ control, name: 'email' });
+  // 메일 칸(SchoolEmailInput)은 값을 직접 다루므로 register 대신 useController로 잇는다.
+  // 비밀번호(register)보다 먼저 불러야 폼 순서대로 등록돼, 둘 다 틀렸을 때 메일 칸에 먼저 초점이 간다
+  // ref는 따로 꺼내 둔다. 같은 객체에서 ref와 값을 함께 읽으면 렌더 중에 ref를 읽는 것으로 본다
+  const {
+    field: { ref: emailRef, ...emailField },
+  } = useController({ control, name: 'email' });
   const fieldIdPrefix = useId();
   const emailError = formState.errors.email?.message;
   const passwordError = formState.errors.password?.message;
@@ -64,46 +67,46 @@ export default function LoginForm() {
           <label htmlFor={`${fieldIdPrefix}-email`} className='font-14-bd text-black'>
             학교 메일
           </label>
-          {/* 아이디만 입력해도 @konkuk.ac.kr을 붙인 메일을 후보로 띄운다 */}
-          <ComboBox
-            options={getSchoolEmailSuggestions(emailField.value)}
-            value={emailField.value}
-            onChange={emailField.onChange}
-            onBlur={emailField.onBlur}
-            placeholder='아이디@konkuk.ac.kr'
-            showEmptyMessage={false}
-            inputProps={{
-              id: `${fieldIdPrefix}-email`,
-              name: emailField.name,
-              ref: emailField.ref,
-              type: 'email',
-              inputMode: 'email',
-              autoComplete: 'username',
-              hasBorder: true,
-              hasError: emailError !== undefined,
-              'aria-invalid': emailError !== undefined,
-              'aria-describedby': `${fieldIdPrefix}-email-error`,
-            }}
-          />
-          <Message id={`${fieldIdPrefix}-email-error`} message={emailError} variant='error' />
+          {/* 칸과 오류 문구 사이는 띄우지 않는다 (Message 자체가 2.4rem 높이라 이미 여백이 있다) */}
+          <div className='flex flex-col'>
+            <SchoolEmailInput
+              id={`${fieldIdPrefix}-email`}
+              name={emailField.name}
+              ref={emailRef}
+              value={emailField.value}
+              onValueChange={emailField.onChange}
+              onBlur={emailField.onBlur}
+              inputMode='email'
+              autoComplete='username'
+              placeholder='아이디@konkuk.ac.kr'
+              hasError={emailError !== undefined}
+              aria-invalid={emailError !== undefined}
+              aria-describedby={`${fieldIdPrefix}-email-error`}
+            />
+            <Message id={`${fieldIdPrefix}-email-error`} message={emailError} variant='error' />
+          </div>
         </div>
 
         <div className='flex flex-col gap-[0.8rem]'>
           <label htmlFor={`${fieldIdPrefix}-password`} className='font-14-bd text-black'>
             비밀번호
           </label>
-          {/* 메일 칸(ComboBox)이 높이를 4.2rem으로 두므로 두 칸 높이를 맞춘다 */}
-          <PasswordInput
-            id={`${fieldIdPrefix}-password`}
-            className='h-[4.2rem]'
-            autoComplete='current-password'
-            placeholder='비밀번호를 입력해 주세요'
-            hasError={passwordError !== undefined}
-            aria-invalid={passwordError !== undefined}
-            aria-describedby={`${fieldIdPrefix}-password-error`}
-            {...register('password')}
-          />
-          <Message id={`${fieldIdPrefix}-password-error`} message={passwordError} variant='error' />
+          <div className='flex flex-col'>
+            <PasswordInput
+              id={`${fieldIdPrefix}-password`}
+              autoComplete='current-password'
+              placeholder='비밀번호를 입력해 주세요'
+              hasError={passwordError !== undefined}
+              aria-invalid={passwordError !== undefined}
+              aria-describedby={`${fieldIdPrefix}-password-error`}
+              {...register('password')}
+            />
+            <Message
+              id={`${fieldIdPrefix}-password-error`}
+              message={passwordError}
+              variant='error'
+            />
+          </div>
         </div>
       </div>
 
