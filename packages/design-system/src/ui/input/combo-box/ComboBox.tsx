@@ -118,8 +118,9 @@ export default function ComboBox({
           className={cn('h-[4.2rem] w-full', inputClassName)}
         />
 
+        {/* 펼친 목록은 뒤에 오는 칸·버튼(position이나 opacity가 있으면 위에 그려진다)보다 위에, 모달(z-50)보다는 아래에 둔다 */}
         {isOpen && (showEmptyMessage || options.length > 0) && (
-          <div className='absolute top-[calc(4.2rem+0.5rem)] left-0 w-full'>
+          <div className='absolute top-[calc(4.2rem+0.5rem)] left-0 z-30 w-full'>
             <CommandList
               className={cn(
                 'bg-black-1 max-h-[20rem] overflow-auto rounded-[0.4rem] p-[0.4rem] shadow-[0_0_12px_0_rgba(69,66,90,0.14)]',
