@@ -4,15 +4,15 @@ import type { ScheduleCell, ScheduleDay } from '../_hooks/useWeekSchedule';
 
 type WeekScheduleGridProps = {
   days: ScheduleDay[];
-  // 한 칸에 함께 근무할 수 있는 최대 인원. 닿으면 빨간 테두리로 알린다
+  // 한 칸에 함께 근무할 수 있는 최대 인원. 칸마다 지금 인원과 함께 보여 준다
   maxConcurrentWorkers: number;
   // 칸 안에 그릴 내용 (배치된 사람과 편집 버튼). 몇 번째 요일 열인지도 넘긴다 (0 = 월)
   renderCell: (cell: ScheduleCell, columnIndex: number) => React.ReactNode;
-  // 조회 대상이 있으면 그 사람이 없는 칸은 흐리게 한다
+  // 조회 대상이 있으면 그 사람이 있는 칸은 파랗게 강조하고, 없는 칸은 흐리게 한다
   focusedUserId?: number | null;
 };
 
-// 월~금 x 30분 단위 근무 시간표. 칸이 최대 인원에 닿으면 빨간 테두리로 알리고, 점심시간 칸은 막아 둔다
+// 월~금 x 30분 단위 근무 시간표. 칸마다 인원/최대 인원을 보여 주고, 점심시간 칸은 막아 둔다
 export default function WeekScheduleGrid({
   days,
   maxConcurrentWorkers,
@@ -50,25 +50,22 @@ export default function WeekScheduleGrid({
               );
             }
 
-            const isFull = cell.users.length >= maxConcurrentWorkers;
-            const isDimmed =
-              focusedUserId !== null && !cell.users.some(({ userId }) => userId === focusedUserId);
+            const hasFocusedUser = cell.users.some(({ userId }) => userId === focusedUserId);
+            const isFocused = focusedUserId !== null && hasFocusedUser;
+            const isDimmed = focusedUserId !== null && !hasFocusedUser;
 
             return (
               <div
                 key={`${dateKey}-${time}`}
                 className={cn(
                   'flex min-h-[8.4rem] flex-col gap-[0.6rem] rounded-[1.2rem] border p-[1rem] transition-opacity',
-                  isFull ? 'border-red/30 bg-red/5' : 'border-gray-50',
+                  isFocused ? 'border-blue bg-blue/5' : 'border-gray-50',
                   isDimmed && 'opacity-30',
                 )}
               >
-                <span
-                  className={cn(
-                    'caption-12-md flex justify-end',
-                    isFull ? 'text-red' : 'text-gray-400',
-                  )}
-                >{`${cell.users.length}/${maxConcurrentWorkers}`}</span>
+                <span className='caption-12-md flex justify-end text-gray-400'>
+                  {`${cell.users.length}/${maxConcurrentWorkers}`}
+                </span>
                 {renderCell(cell, columnIndex)}
               </div>
             );

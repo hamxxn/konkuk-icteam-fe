@@ -49,7 +49,7 @@
 - 라우트 로컬 `_components/`(각 `app/**/_components`): 해당 라우트 하나에서만 쓰는 컴포넌트. 화면이 여러 섹션으로 나뉘면 섹션별 폴더(kebab-case)를 만들어 그 안에 둔다
   ```
   (admin)/dashboard/_components/
-  ├── request-notice/RequestNoticeBar.tsx
+  ├── today-status/TodayStatusBar.tsx, RequestNoticeCard.tsx
   ├── date-board/DateBoard.tsx, AssignTaskList.tsx, ...
   └── notice/NoticePanel.tsx, NoticeForm.tsx, ...
   ```

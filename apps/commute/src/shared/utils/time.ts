@@ -1,6 +1,6 @@
 import { formatNumber } from '@konkuk-icteam-fe/design-system/date';
 
-const MINUTES_PER_HOUR = 60;
+export const MINUTES_PER_HOUR = 60;
 
 /**
  * 'HH:mm' 형식의 시각을 자정부터 지난 분으로 바꿉니다.

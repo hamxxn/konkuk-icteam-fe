@@ -7,6 +7,7 @@ import { toISO } from '@konkuk-icteam-fe/design-system/date';
 import { DatePicker } from '@konkuk-icteam-fe/design-system/ui';
 import WorkScheduleList from './WorkScheduleList';
 import { formatMonthDayWithWeekday } from '@/shared/utils/formatDate';
+import { useCurrentTime } from '../../_hooks/useCurrentTime';
 import { useWorkSchedule } from '../../_hooks/useWorkSchedule';
 import { getWorkersByPeriod } from '../../_utils/getWorkersByPeriod';
 import AssignTaskList from './AssignTaskList';
@@ -20,7 +21,8 @@ type DateBoardProps = {
 export default function DateBoard({ onNotify }: DateBoardProps) {
   // 처음에는 오늘을 본다
   const [selectedDateKey, setSelectedDateKey] = useState(() => toISO(new Date()));
-  const { slots } = useWorkSchedule(selectedDateKey);
+  const { slots, shifts } = useWorkSchedule(selectedDateKey);
+  const currentTime = useCurrentTime();
   const headingId = useId();
   const calendarId = useId();
   const calendarAreaRef = useRef<HTMLDivElement>(null);
@@ -96,7 +98,12 @@ export default function DateBoard({ onNotify }: DateBoardProps) {
       <div className='grid grid-cols-2 divide-x divide-gray-50'>
         <div className='px-[2.1rem] py-[1.6rem]'>
           <h3 className='font-16-bd mb-[2rem] text-black'>근무 시간표</h3>
-          <WorkScheduleList slots={slots} />
+          <WorkScheduleList
+            dateKey={selectedDateKey}
+            slots={slots}
+            shifts={shifts}
+            now={currentTime}
+          />
         </div>
         <div className='px-[2.1rem] py-[1.6rem]'>
           <h3 className='font-16-bd mb-[2rem] text-black'>업무 지정</h3>

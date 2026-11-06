@@ -10,6 +10,7 @@ import PendingRequestsPanel from './_components/PendingRequestsPanel';
 import QuickSearchPanel from './_components/QuickSearchPanel';
 import WeekRangeNavigator from './_components/WeekRangeNavigator';
 import WeekScheduleGrid from './_components/WeekScheduleGrid';
+import WorkerTimePanel from './_components/WorkerTimePanel';
 import {
   useWeekSchedule,
   type ScheduleCell,
@@ -23,7 +24,8 @@ type RemoveTarget = { cell: ScheduleCell; user: WorkScheduleUser };
 // 이 요일 열부터(0 = 월) 칸의 검색창을 왼쪽으로 연다
 const SEARCH_TO_LEFT_FROM_COLUMN = 3;
 
-// 근로시간 관리. 편집하기를 누르면 칸마다 근무자를 넣고 뺄 수 있다. 오른쪽에서 근무자를 찾고 승인 대기 수정요청을 미리 본다
+// 근로시간 관리. 편집하기를 누르면 칸마다 근무자를 넣고 뺄 수 있다. 오른쪽에서 승인 대기 수정요청을 미리 보고,
+// 근무자를 찾으면 시간표에서 그 사람 칸을 강조하며 검색창 바로 아래에 그 주 근무 시간을 보여 준다
 export default function PageClient() {
   const [weekStartKey, setWeekStartKey] = useState(() => getWeekStartKey(new Date()));
   const [isEditMode, setIsEditMode] = useState(false);
@@ -87,6 +89,13 @@ export default function PageClient() {
       {/* 스크롤해도 오른쪽 칸은 화면에 붙어 있다 */}
       <div className='sticky top-[2.4rem] flex flex-col gap-[1.6rem]'>
         <QuickSearchPanel onSelectedWorkerChange={setFilteredWorker} />
+        {filteredWorker ? (
+          <WorkerTimePanel
+            worker={filteredWorker}
+            days={schedule.days}
+            onClose={() => setFilteredWorker(null)}
+          />
+        ) : null}
         <PendingRequestsPanel />
       </div>
 

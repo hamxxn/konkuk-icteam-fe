@@ -1,3 +1,4 @@
+import { WORKERS_MOCK } from './workers';
 import type { CreateTodoRequest, Todo, TodoAssignment } from '../todos';
 
 // 날마다 반복하는 업무. 추가한 업무는 여기에 붙는다
@@ -44,6 +45,29 @@ export const deleteTodoMock = (todoId: number) => {
 
 export const getTodoAssignmentsMock = (dateKey: string) => ASSIGNMENTS_BY_DATE[dateKey] ?? [];
 
+// 시작 시각만 정하고 아직 아무도 맡기지 않은 업무도 시작 시각을 기억해 둔다
 export const saveTodoAssignmentsMock = (dateKey: string, assignments: TodoAssignment[]) => {
-  ASSIGNMENTS_BY_DATE[dateKey] = assignments.filter(({ userIds }) => userIds.length > 0);
+  ASSIGNMENTS_BY_DATE[dateKey] = assignments;
 };
+
+/**
+ * 근로학생마다 업무를 지금까지 몇 번 했는지 목업으로 셉니다. 업무·사람마다 정해진 지난 횟수에,
+ * 오늘 전 날짜에 저장한 지정 횟수를 더합니다.
+ * @param todoId 업무 id
+ * @param todayKey 오늘 (YYYY-MM-DD). 이날부터의 지정은 아직 하지 않은 것으로 본다
+ * @returns 사람별 횟수 (0번인 사람은 뺌)
+ * @example getTodoAssigneeCountsMock(6, '2026-10-27'); // [{ userId: 2, count: 3 }, ...]
+ */
+export const getTodoAssigneeCountsMock = (todoId: number, todayKey: string) =>
+  WORKERS_MOCK.map(({ userId }) => {
+    const baseCount = (todoId * 7 + userId * 3) % 6;
+    const savedCount = Object.entries(ASSIGNMENTS_BY_DATE).filter(
+      ([dateKey, assignments]) =>
+        dateKey < todayKey &&
+        assignments.some(
+          (assignment) => assignment.todoId === todoId && assignment.userIds.includes(userId),
+        ),
+    ).length;
+
+    return { userId, count: baseCount + savedCount };
+  }).filter(({ count }) => count > 0);

@@ -6,8 +6,9 @@ import { cn } from '@konkuk-icteam-fe/design-system/cn';
 import { ROUTES } from '@/shared/config/routes';
 import { usePendingRequestCount } from '../../_hooks/usePendingRequestCount';
 
-// 대시보드 맨 위 알림 줄. 승인 대기 요청 수는 직접 불러온다. 누르면 근로시간 수정요청 화면으로 간다. 처리할 요청이 있으면 파랗게 눈에 띄게 한다
-export default function RequestNoticeBar() {
+// 오늘 근로 현황 줄 오른쪽 끝 카드. 승인 대기 요청 수는 직접 불러온다. 누르면 근로시간 수정요청 화면으로 간다.
+// 처리할 요청이 있으면 파랗게 눈에 띄게 한다
+export default function RequestNoticeCard() {
   const count = usePendingRequestCount();
   const hasRequests = count > 0;
 
@@ -32,27 +33,29 @@ export default function RequestNoticeBar() {
       >
         <IconInfo aria-hidden className='h-[1.6rem] w-[1.6rem]' />
       </span>
-      <p className='font-16-md flex-1 text-black'>
-        {hasRequests ? (
-          <>
-            처리할 근로시간 승인 요청이{' '}
-            <strong className='font-16-bd text-blue'>{`${count}건`}</strong> 있어요.
-          </>
-        ) : (
-          <span className='text-gray-500'>처리할 근로시간 승인 요청이 없어요.</span>
-        )}
-      </p>
-      <span
-        className={cn(
-          'caption-14-md flex items-center gap-[0.2rem]',
-          hasRequests ? 'text-blue' : 'text-gray-500',
-        )}
-      >
-        {hasRequests ? '바로 처리하기' : '요청 내역 보기'}
-        <IconArrowRight
-          aria-hidden
-          className='h-[1.8rem] w-[1.8rem] transition-transform group-hover:translate-x-[0.2rem]'
-        />
+      <span className='flex min-w-0 flex-1 flex-col gap-[0.4rem]'>
+        <span className='caption-14-md text-black'>
+          {hasRequests ? (
+            <>
+              처리할 근로시간 승인 요청이{' '}
+              <strong className='font-14-bd text-blue'>{`${count}건`}</strong>
+            </>
+          ) : (
+            <span className='text-gray-500'>처리할 승인 요청이 없어요</span>
+          )}
+        </span>
+        <span
+          className={cn(
+            'caption-12-md flex items-center gap-[0.2rem]',
+            hasRequests ? 'text-blue' : 'text-gray-500',
+          )}
+        >
+          {hasRequests ? '바로 처리하기' : '요청 내역 보기'}
+          <IconArrowRight
+            aria-hidden
+            className='h-[1.6rem] w-[1.6rem] transition-transform group-hover:translate-x-[0.2rem]'
+          />
+        </span>
       </span>
     </Link>
   );

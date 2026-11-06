@@ -1,8 +1,10 @@
-import { parseApiDate, toApiDate } from '@/app/(student)/_apis/common';
+import { parseApiDate, toApiDate, type TimeString } from '@/app/(student)/_apis/common';
 import type { TodoPeriod } from '@/app/(student)/_apis/todos';
+import { getDailyTodosMock } from '@/app/(student)/_apis/mock/todos';
 import {
   createTodoMock,
   deleteTodoMock,
+  getTodoAssigneeCountsMock,
   getTodoAssignmentsMock,
   getTodosMock,
   saveTodoAssignmentsMock,
@@ -41,9 +43,10 @@ export type DeleteTodoRequest = {
   todoId: number;
 };
 
-// 업무 하나를 맡은 근로학생. 같은 시간대에 근무하는 사람에게만 맡길 수 있다
+// 업무 하나를 맡은 근로학생과 업무 시작 시각. 그 시각에 근무하는 사람에게만 맡길 수 있다
 export type TodoAssignment = {
   todoId: number;
+  start: TimeString;
   userIds: number[];
 };
 
@@ -53,7 +56,7 @@ export type GetTodoAssignmentsRequest = {
 
 export type GetTodoAssignmentsResponse = {
   date: Date;
-  // 한 명도 맡기지 않은 업무는 빠진다
+  // 시작 시각을 정하지 않은 업무는 빠진다. 시작 시각만 정하고 아무도 맡기지 않았으면 userIds가 빈 배열이다
   assignments: TodoAssignment[];
 };
 
@@ -64,6 +67,29 @@ export type SaveTodoAssignmentsRequest = {
 };
 
 export type SaveTodoAssignmentsResponse = GetTodoAssignmentsResponse;
+
+export type GetTodoAssigneeCountsRequest = {
+  todoId: number;
+};
+
+// 근로학생마다 이 업무를 지금까지(월 단위 아님) 몇 번 했는지. 한 번도 안 한 사람은 빠진다
+export type GetTodoAssigneeCountsResponse = {
+  todoId: number;
+  counts: { userId: number; count: number }[];
+};
+
+export type GetTodoProgressRequest = {
+  date: Date;
+};
+
+// 그날 업무를 근로학생이 얼마나 끝냈는지
+export type GetTodoProgressResponse = {
+  date: Date;
+  totalCount: number;
+  completedCount: number;
+  // 근로학생이 완료한 업무
+  completedTodoIds: number[];
+};
 
 /**
  * GET /admin/todos
@@ -117,3 +143,33 @@ export const saveTodoAssignments = ({
 
   return getTodoAssignments({ date });
 };
+
+/**
+ * GET /admin/todo-progress?date=
+ * 그날 업무 수와 근로학생이 완료한 업무. 대시보드 오늘 근로 현황과 업무 지정 목록의 취소선에 쓴다
+ */
+export const getTodoProgress = ({ date }: GetTodoProgressRequest): GetTodoProgressResponse => {
+  const dateKey = toApiDate(date);
+  const dailyTodos = getDailyTodosMock(dateKey);
+  const completedTodoIds = dailyTodos
+    .filter(({ isCompleted }) => isCompleted)
+    .map(({ todoId }) => todoId);
+
+  return {
+    date: parseApiDate(dateKey),
+    totalCount: dailyTodos.length,
+    completedCount: completedTodoIds.length,
+    completedTodoIds,
+  };
+};
+
+/**
+ * GET /admin/todos/{todoId}/assignee-counts
+ * 근로학생마다 이 업무를 지금까지 몇 번 했는지. 업무 지정에서 이름 옆에 보여 준다
+ */
+export const getTodoAssigneeCounts = ({
+  todoId,
+}: GetTodoAssigneeCountsRequest): GetTodoAssigneeCountsResponse => ({
+  todoId,
+  counts: getTodoAssigneeCountsMock(todoId, toApiDate(new Date())),
+});
